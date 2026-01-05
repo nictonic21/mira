@@ -51,7 +51,7 @@ export default function Onboarding() {
   const handleNext = () => {
     if (isLastStep) {
       localStorage.setItem("mira-onboarded", "true");
-      router.push("/");
+      router.push("/signup");
     } else {
       setStep(step + 1);
     }
@@ -59,7 +59,7 @@ export default function Onboarding() {
 
   const handleSkip = () => {
     localStorage.setItem("mira-onboarded", "true");
-    router.push("/");
+    router.push("/signup");
   };
 
   return (
