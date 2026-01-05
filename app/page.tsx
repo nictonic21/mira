@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { supabase, getUser } from "../lib/supabase";
+import { supabase, getUser, getUserId } from "../lib/supabase";
 
 function HomeContent() {
   const [messages, setMessages] = useState<{ role: string; content: string }[]>([]);
@@ -12,6 +12,7 @@ function HomeContent() {
   const [isListening, setIsListening] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [user, setUser] = useState<any>(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -24,8 +25,22 @@ function HomeContent() {
   ];
 
   useEffect(() => {
-    checkOnboarding();
-    loadUser();
+    checkAuth();
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const checkAuth = async () => {
+    const u = await getUser();
+    if (!u) {
+      router.push("/login");
+      return;
+    }
+    setUser(u);
+    setCheckingAuth(false);
+    
     const savedVoice = localStorage.getItem("mira-voice");
     if (savedVoice !== null) setVoiceEnabled(savedVoice === "true");
 
@@ -34,26 +49,13 @@ function HomeContent() {
       router.replace("/", { scroll: false });
       setTimeout(() => sendMessage(promptParam), 100);
     }
-  }, []);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const checkOnboarding = () => {
-    const onboarded = localStorage.getItem("mira-onboarded");
-    if (!onboarded) {
-      router.push("/onboarding");
-    }
-  };
-
-  const loadUser = async () => {
-    const u = await getUser();
-    setUser(u);
   };
 
   const saveMessage = async (role: string, content: string) => {
-    await supabase.from("messages").insert({ role, content });
+    const userId = await getUserId();
+    if (userId) {
+      await supabase.from("messages").insert({ role, content, user_id: userId });
+    }
   };
 
   const speak = async (text: string) => {
@@ -136,6 +138,16 @@ function HomeContent() {
     localStorage.setItem("mira-voice", String(newValue));
   };
 
+  if (checkingAuth) {
+    return (
+      <div style={{ minHeight: "100vh", backgroundColor: "#020617", color: "white", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ width: "60px", height: "60px", borderRadius: "20px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "white", fontSize: "24px", fontWeight: 700 }}>M</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ minHeight: "100vh", backgroundColor: "#020617", color: "white", display: "flex", flexDirection: "column" }}>
       
@@ -180,12 +192,6 @@ function HomeContent() {
               <button onClick={toggleVoice} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", color: voiceEnabled ? "#22c55e" : "rgba(255,255,255,0.5)", background: "none", border: "none", borderRadius: "10px", width: "100%", cursor: "pointer", fontSize: "14px", textAlign: "left" }}>
                 Voice {voiceEnabled ? "on" : "off"}
               </button>
-              {!user && (
-                <>
-                  <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.1)", margin: "8px 0" }} />
-                  <a href="/login" onClick={() => setMenuOpen(false)} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", color: "#a855f7", textDecoration: "none", borderRadius: "10px" }}>Sign in</a>
-                </>
-              )}
             </div>
           </>
         )}
