@@ -9,6 +9,10 @@ export default function Settings() {
   const [user, setUser] = useState<any>(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const router = useRouter();
@@ -36,6 +40,37 @@ export default function Settings() {
     localStorage.setItem("mira-voice", String(newValue));
   };
 
+  const handleChangePassword = async () => {
+    if (!newPassword || !confirmPassword) {
+      setMessage({ type: "error", text: "Please fill in all fields" });
+      return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+      setMessage({ type: "error", text: "Passwords don't match" });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      setMessage({ type: "error", text: "Password must be at least 6 characters" });
+      return;
+    }
+
+    setSaving(true);
+    setMessage(null);
+
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+    if (error) {
+      setMessage({ type: "error", text: error.message });
+    } else {
+      setMessage({ type: "success", text: "Password updated!" });
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+    setSaving(false);
+  };
+
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     localStorage.removeItem("mira-onboarded");
@@ -52,7 +87,7 @@ export default function Settings() {
     
     setDeleting(false);
     setShowDeleteConfirm(false);
-    alert("All your data has been deleted.");
+    setMessage({ type: "success", text: "All your data has been deleted." });
   };
 
   if (checkingAuth) {
@@ -89,7 +124,7 @@ export default function Settings() {
           </div>
           <div>
             <p style={{ fontSize: "15px", fontWeight: 500 }}>Settings</p>
-            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)" }}>Manage your account</p>
+            <p style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)" }}>Your account & preferences</p>
           </div>
         </div>
         
@@ -108,7 +143,6 @@ export default function Settings() {
               <div style={{ height: "1px", backgroundColor: "rgba(255,255,255,0.1)", margin: "8px 0" }} />
               <a href="/history" style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", color: "rgba(255,255,255,0.7)", textDecoration: "none", borderRadius: "10px" }}>History</a>
               <a href="/settings" style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", color: "#a855f7", textDecoration: "none", borderRadius: "10px", backgroundColor: "rgba(168,85,247,0.1)" }}>Settings</a>
-              <a href="/profile" style={{ display: "flex", alignItems: "center", gap: "12px", padding: "12px 16px", color: "rgba(255,255,255,0.7)", textDecoration: "none", borderRadius: "10px" }}>Profile</a>
             </div>
           </>
         )}
@@ -116,31 +150,31 @@ export default function Settings() {
 
       <main style={{ padding: "20px", maxWidth: "500px", margin: "0 auto", paddingBottom: "40px" }}>
         
-        {/* Account Section */}
-        <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)" }}>
-          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600, marginBottom: "16px" }}>ACCOUNT</p>
-          
-          <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
-            <div style={{ width: "50px", height: "50px", borderRadius: "9999px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <span style={{ color: "white", fontSize: "20px", fontWeight: 600 }}>{user?.email?.[0]?.toUpperCase() || "?"}</span>
-            </div>
-            <div>
-              <p style={{ color: "white", fontSize: "15px", fontWeight: 500 }}>{user?.email || "Unknown"}</p>
-              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "12px" }}>Signed in</p>
-            </div>
+        {/* Message Toast */}
+        {message && (
+          <div style={{ 
+            padding: "14px 20px", 
+            borderRadius: "12px", 
+            marginBottom: "20px",
+            backgroundColor: message.type === "success" ? "rgba(34,197,94,0.2)" : "rgba(239,68,68,0.2)",
+            border: `1px solid ${message.type === "success" ? "rgba(34,197,94,0.3)" : "rgba(239,68,68,0.3)"}`,
+            color: message.type === "success" ? "#22c55e" : "#ef4444",
+            fontSize: "14px"
+          }}>
+            {message.text}
           </div>
+        )}
 
-          <a href="/profile" style={{ width: "100%", padding: "14px", borderRadius: "12px", border: "1px solid rgba(168,85,247,0.3)", backgroundColor: "rgba(168,85,247,0.1)", color: "#a855f7", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px", textDecoration: "none", marginBottom: "12px" }}>
-  <svg xmlns="http://www.w3.org/2000/svg" style={{ width: "18px", height: "18px" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>
-  Edit Profile
-</a>
-          <button onClick={handleSignOut} style={{ width: "100%", padding: "14px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "transparent", color: "rgba(255,255,255,0.7)", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
-            <svg xmlns="http://www.w3.org/2000/svg" style={{ width: "18px", height: "18px" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
-            Sign out
-          </button>
+        {/* Profile Section */}
+        <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "24px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)", textAlign: "center" }}>
+          <div style={{ width: "70px", height: "70px", borderRadius: "9999px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px" }}>
+            <span style={{ color: "white", fontSize: "28px", fontWeight: 600 }}>{user?.email?.[0]?.toUpperCase() || "?"}</span>
+          </div>
+          <p style={{ color: "white", fontSize: "16px", fontWeight: 500, marginBottom: "4px" }}>{user?.email || "Unknown"}</p>
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "12px" }}>Member since {new Date(user?.created_at).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</p>
         </section>
 
-        {/* Preferences Section */}
+        {/* Voice Setting */}
         <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)" }}>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600, marginBottom: "16px" }}>PREFERENCES</p>
           
@@ -158,22 +192,87 @@ export default function Settings() {
           </div>
         </section>
 
-        {/* Data Section */}
+        {/* Change Password */}
+        <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)" }}>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600, marginBottom: "16px" }}>CHANGE PASSWORD</p>
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="New password"
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: "12px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                backgroundColor: "rgba(255,255,255,0.05)",
+                color: "white",
+                fontSize: "15px",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm new password"
+              style={{
+                width: "100%",
+                padding: "14px 16px",
+                borderRadius: "12px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                backgroundColor: "rgba(255,255,255,0.05)",
+                color: "white",
+                fontSize: "15px",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
+            />
+            <button
+              onClick={handleChangePassword}
+              disabled={saving || !newPassword || !confirmPassword}
+              style={{
+                width: "100%",
+                padding: "14px",
+                borderRadius: "12px",
+                border: "none",
+                background: newPassword && confirmPassword ? "linear-gradient(135deg, #a855f7, #ec4899)" : "rgba(255,255,255,0.1)",
+                color: newPassword && confirmPassword ? "white" : "rgba(255,255,255,0.3)",
+                fontSize: "15px",
+                fontWeight: 600,
+                cursor: newPassword && confirmPassword ? "pointer" : "not-allowed",
+              }}
+            >
+              {saving ? "Updating..." : "Update password"}
+            </button>
+          </div>
+        </section>
+
+        {/* Sign Out */}
+        <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)" }}>
+          <button onClick={handleSignOut} style={{ width: "100%", padding: "14px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "transparent", color: "rgba(255,255,255,0.7)", fontSize: "14px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "8px" }}>
+            <svg xmlns="http://www.w3.org/2000/svg" style={{ width: "18px", height: "18px" }} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+            Sign out
+          </button>
+        </section>
+
+        {/* Danger Zone */}
         <section style={{ backgroundColor: "rgba(239,68,68,0.1)", borderRadius: "20px", padding: "20px", border: "1px solid rgba(239,68,68,0.2)" }}>
-          <p style={{ color: "#ef4444", fontSize: "12px", fontWeight: 600, marginBottom: "16px" }}>DANGER ZONE</p>
-          
-          <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", lineHeight: 1.5, marginBottom: "16px" }}>Delete all your data including messages, moods, and dreams. This action cannot be undone.</p>
-          
+          <p style={{ color: "#ef4444", fontSize: "12px", fontWeight: 600, marginBottom: "12px" }}>DANGER ZONE</p>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", marginBottom: "16px" }}>Delete all your messages, moods, and dreams. This cannot be undone.</p>
           <button onClick={() => setShowDeleteConfirm(true)} style={{ width: "100%", padding: "14px", borderRadius: "12px", border: "1px solid #ef4444", backgroundColor: "transparent", color: "#ef4444", fontSize: "14px", fontWeight: 500, cursor: "pointer" }}>Delete all my data</button>
         </section>
 
         {/* App Info */}
         <div style={{ textAlign: "center", marginTop: "32px" }}>
-          <div style={{ width: "48px", height: "48px", borderRadius: "14px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 12px" }}>
-            <span style={{ color: "white", fontSize: "18px", fontWeight: 700 }}>M</span>
+          <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 8px" }}>
+            <span style={{ color: "white", fontSize: "16px", fontWeight: 700 }}>M</span>
           </div>
           <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px" }}>MIRA v1.0</p>
-          <p style={{ color: "rgba(255,255,255,0.2)", fontSize: "11px", marginTop: "4px" }}>See yourself clearly</p>
+          <p style={{ color: "rgba(255,255,255,0.2)", fontSize: "11px", marginTop: "2px" }}>See yourself clearly</p>
         </div>
       </main>
     </div>
