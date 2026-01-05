@@ -2,104 +2,182 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "../../lib/supabase";
+import { supabase } from "../../lib/supabase";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+    if (!email || !password) {
+      setMessage({ type: "error", text: "Please fill in all fields" });
+      return;
+    }
 
-    const { error } = await signIn(email, password);
-    setIsLoading(false);
+    setIsLoading(true);
+    setMessage(null);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
-      setError(error.message);
-    } else {
+      if (error.message.includes("Email not confirmed")) {
+        setMessage({ type: "error", text: "Please check your email and confirm your account first" });
+      } else if (error.message.includes("Invalid login credentials")) {
+        setMessage({ type: "error", text: "Invalid email or password" });
+      } else {
+        setMessage({ type: "error", text: error.message });
+      }
+    } else if (data.user) {
+      localStorage.setItem("mira-onboarded", "true");
       router.push("/");
     }
+
+    setIsLoading(false);
+  };
+
+  const handleForgotPassword = async () => {
+    if (!email) {
+      setMessage({ type: "error", text: "Enter your email first" });
+      return;
+    }
+
+    setIsLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: "https://mira-app-one.vercel.app/reset-password",
+    });
+
+    if (error) {
+      setMessage({ type: "error", text: error.message });
+    } else {
+      setMessage({ type: "success", text: "Password reset email sent! Check your inbox." });
+    }
+    setIsLoading(false);
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#020617", color: "white", display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "#020617", color: "white", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px" }}>
       
-      <main style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
+      <div style={{ width: "100%", maxWidth: "360px" }}>
         
         {/* Logo */}
-        <div style={{ width: "80px", height: "80px", borderRadius: "24px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 40px rgba(168,85,247,0.3)", marginBottom: "24px" }}>
-          <span style={{ color: "white", fontSize: "32px", fontWeight: 700 }}>M</span>
+        <div style={{ textAlign: "center", marginBottom: "32px" }}>
+          <div style={{ width: "70px", height: "70px", borderRadius: "22px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", boxShadow: "0 0 40px rgba(168,85,247,0.3)" }}>
+            <span style={{ color: "white", fontSize: "28px", fontWeight: 700 }}>M</span>
+          </div>
+          <h1 style={{ fontSize: "26px", fontWeight: 600, marginBottom: "8px" }}>Welcome back</h1>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px" }}>Sign in to continue to MIRA</p>
         </div>
 
-        <h1 style={{ fontSize: "28px", fontWeight: 600, marginBottom: "8px" }}>Welcome back</h1>
-        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "15px", marginBottom: "32px" }}>Your patterns are waiting</p>
+        {/* Message */}
+        {message && (
+          <div style={{ 
+            padding: "14px 18px", 
+            borderRadius: "12px", 
+            marginBottom: "20px",
+            backgroundColor: message.type === "success" ? "rgba(34,197,94,0.15)" : "rgba(239,68,68,0.15)",
+            border: `1px solid ${message.type === "success" ? "rgba(34,197,94,0.3)" : "rgba(239,68,68,0.3)"}`,
+            color: message.type === "success" ? "#22c55e" : "#ef4444",
+            fontSize: "14px",
+            lineHeight: 1.5,
+          }}>
+            {message.text}
+          </div>
+        )}
 
-        <form onSubmit={handleLogin} style={{ width: "100%", maxWidth: "320px" }}>
-          
-          {error && (
-            <div style={{ backgroundColor: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: "12px", padding: "12px 16px", marginBottom: "20px" }}>
-              <p style={{ color: "#ef4444", fontSize: "13px" }}>{error}</p>
-            </div>
-          )}
-
-          <div style={{ marginBottom: "16px" }}>
-            <label style={{ display: "block", color: "rgba(255,255,255,0.5)", fontSize: "12px", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Email</label>
+        {/* Form */}
+        <form onSubmit={handleLogin} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+          <div>
+            <label style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: "13px", marginBottom: "8px" }}>Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required
-              style={{ width: "100%", padding: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.05)", color: "white", fontSize: "15px", outline: "none", boxSizing: "border-box" }}
               placeholder="you@example.com"
+              style={{
+                width: "100%",
+                padding: "16px",
+                borderRadius: "14px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                backgroundColor: "rgba(255,255,255,0.05)",
+                color: "white",
+                fontSize: "15px",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
             />
           </div>
-
-          <div style={{ marginBottom: "8px" }}>
-            <label style={{ display: "block", color: "rgba(255,255,255,0.5)", fontSize: "12px", marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.05em" }}>Password</label>
+          
+          <div>
+            <label style={{ display: "block", color: "rgba(255,255,255,0.6)", fontSize: "13px", marginBottom: "8px" }}>Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required
-              style={{ width: "100%", padding: "16px", borderRadius: "14px", border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.05)", color: "white", fontSize: "15px", outline: "none", boxSizing: "border-box" }}
               placeholder="••••••••"
+              style={{
+                width: "100%",
+                padding: "16px",
+                borderRadius: "14px",
+                border: "1px solid rgba(255,255,255,0.1)",
+                backgroundColor: "rgba(255,255,255,0.05)",
+                color: "white",
+                fontSize: "15px",
+                outline: "none",
+                boxSizing: "border-box",
+              }}
             />
           </div>
 
-          <div style={{ textAlign: "right", marginBottom: "24px" }}>
-            <a href="/forgot-password" style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px", textDecoration: "none" }}>Forgot password?</a>
-          </div>
+          <button
+            type="button"
+            onClick={handleForgotPassword}
+            style={{
+              background: "none",
+              border: "none",
+              color: "#a855f7",
+              fontSize: "13px",
+              cursor: "pointer",
+              textAlign: "right",
+              padding: "0",
+            }}
+          >
+            Forgot password?
+          </button>
 
           <button
             type="submit"
             disabled={isLoading}
-            style={{ width: "100%", padding: "18px", borderRadius: "14px", border: "none", background: isLoading ? "rgba(168,85,247,0.5)" : "linear-gradient(135deg, #a855f7, #ec4899)", color: "white", fontSize: "16px", fontWeight: 600, cursor: isLoading ? "not-allowed" : "pointer", boxShadow: "0 0 30px rgba(168,85,247,0.3)", marginBottom: "20px" }}
+            style={{
+              width: "100%",
+              padding: "16px",
+              borderRadius: "14px",
+              border: "none",
+              background: isLoading ? "rgba(168,85,247,0.5)" : "linear-gradient(135deg, #a855f7, #ec4899)",
+              color: "white",
+              fontSize: "16px",
+              fontWeight: 600,
+              cursor: isLoading ? "not-allowed" : "pointer",
+              marginTop: "8px",
+              boxShadow: isLoading ? "none" : "0 0 30px rgba(168,85,247,0.3)",
+            }}
           >
             {isLoading ? "Signing in..." : "Sign in"}
           </button>
-
-          <p style={{ textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: "14px" }}>
-            Don't have an account? <a href="/signup" style={{ color: "#a855f7", textDecoration: "none" }}>Create one</a>
-          </p>
         </form>
 
-        {/* Divider */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px", margin: "32px 0", width: "100%", maxWidth: "320px" }}>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(255,255,255,0.1)" }} />
-          <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px" }}>or continue as guest</span>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "rgba(255,255,255,0.1)" }} />
-        </div>
-
-        <a href="/" style={{ padding: "14px 28px", borderRadius: "12px", border: "1px solid rgba(255,255,255,0.1)", backgroundColor: "rgba(255,255,255,0.03)", color: "rgba(255,255,255,0.7)", fontSize: "14px", textDecoration: "none" }}>
-          Continue without account
-        </a>
-
-      </main>
+        {/* Sign up link */}
+        <p style={{ textAlign: "center", marginTop: "24px", color: "rgba(255,255,255,0.5)", fontSize: "14px" }}>
+          Don't have an account?{" "}
+          <a href="/signup" style={{ color: "#a855f7", textDecoration: "none", fontWeight: 500 }}>Sign up</a>
+        </p>
+      </div>
     </div>
   );
 }
