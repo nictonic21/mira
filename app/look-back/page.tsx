@@ -566,28 +566,124 @@ Format: Just the 3 memories, one per line, nothing else.`
               </section>
             )}
 
-            {monthlyMemories.length > 0 && (
-              <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)" }}>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600, marginBottom: "16px" }}>MONTHLY MEMORIES</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                  {monthlyMemories.map((memory, i) => (
-                    <div key={i} style={{ padding: "16px", backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "14px", borderLeft: `3px solid ${memory.moodColor}` }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                        <p style={{ color: "white", fontSize: "15px", fontWeight: 500 }}>{memory.month} {memory.year}</p>
-                        <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px" }}>{memory.messageCount} msgs</span>
-                      </div>
-                      {memory.quote && <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", fontStyle: "italic", marginBottom: "8px" }}>"{memory.quote}..."</p>}
-                      {memory.topMood && (
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                          <div style={{ width: "10px", height: "10px", borderRadius: "9999px", backgroundColor: memory.moodColor }} />
-                          <span style={{ color: memory.moodColor, fontSize: "12px" }}>Mostly {memory.topMood.toLowerCase()}</span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </section>
-            )}
+{monthlyMemories.length === 0 && onThisDay.length === 0 && dreams.length === 0 && moodJourney.length === 0 && (
+  <>
+    <div style={{ textAlign: "center", padding: "20px", marginBottom: "20px" }}>
+      <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "15px", marginBottom: "8px" }}>Build memories with MIRA over time</p>
+      <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px" }}>Here's what your memories could look like...</p>
+    </div>
+
+    {/* Demo MIRA Remembers */}
+    <section style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.15), rgba(236,72,153,0.15))", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(168,85,247,0.2)", opacity: 0.6 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "white", fontSize: "12px", fontWeight: 700 }}>M</span>
+        </div>
+        <p style={{ color: "#a855f7", fontSize: "12px", fontWeight: 600 }}>MIRA REMEMBERS</p>
+        <span style={{ backgroundColor: "rgba(168,85,247,0.2)", color: "#a855f7", fontSize: "10px", padding: "2px 8px", borderRadius: "10px", marginLeft: "auto" }}>Example</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.6, paddingLeft: "12px", borderLeft: "2px solid rgba(168,85,247,0.3)", fontStyle: "italic" }}>I remember when you told me about your dream to start your own business...</p>
+        <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.6, paddingLeft: "12px", borderLeft: "2px solid rgba(168,85,247,0.3)", fontStyle: "italic" }}>I remember when you were nervous about that big presentation...</p>
+        <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.6, paddingLeft: "12px", borderLeft: "2px solid rgba(168,85,247,0.3)", fontStyle: "italic" }}>I remember when you said your mum called and it made your whole day...</p>
+      </div>
+    </section>
+
+    {/* Demo Monthly Memories */}
+    <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)", opacity: 0.6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600 }}>MONTHLY MEMORIES</p>
+        <span style={{ backgroundColor: "rgba(168,85,247,0.2)", color: "#a855f7", fontSize: "10px", padding: "2px 8px", borderRadius: "10px" }}>Example</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        {[
+          { month: "December", year: 2024, quote: "I've been thinking a lot about next year and what I want to achieve...", topMood: "Calm", moodColor: "#c084fc", messageCount: 47 },
+          { month: "November", year: 2024, quote: "Work has been crazy but I'm managing better now...", topMood: "Anxious", moodColor: "#a855f7", messageCount: 32 },
+          { month: "October", year: 2024, quote: "Had the best weekend with family, feeling grateful...", topMood: "Happy", moodColor: "#f472b6", messageCount: 28 },
+        ].map((memory, i) => (
+          <div key={i} style={{ padding: "16px", backgroundColor: "rgba(255,255,255,0.02)", borderRadius: "14px", borderLeft: `3px solid ${memory.moodColor}` }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+              <p style={{ color: "white", fontSize: "15px", fontWeight: 500 }}>{memory.month} {memory.year}</p>
+              <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px" }}>{memory.messageCount} msgs</span>
+            </div>
+            <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "13px", fontStyle: "italic", marginBottom: "8px" }}>"{memory.quote}"</p>
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <div style={{ width: "10px", height: "10px", borderRadius: "9999px", backgroundColor: memory.moodColor }} />
+              <span style={{ color: memory.moodColor, fontSize: "12px" }}>Mostly {memory.topMood.toLowerCase()}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Demo On This Day */}
+    <section style={{ backgroundColor: "rgba(139,92,246,0.1)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(139,92,246,0.2)", opacity: 0.6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <p style={{ color: "#8b5cf6", fontSize: "12px", fontWeight: 600 }}>ON THIS DAY</p>
+        <span style={{ backgroundColor: "rgba(139,92,246,0.2)", color: "#8b5cf6", fontSize: "10px", padding: "2px 8px", borderRadius: "10px" }}>Example</span>
+      </div>
+      <div>
+        <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "11px", marginBottom: "6px" }}>1 year ago</p>
+        <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.5, fontStyle: "italic" }}>"I can't believe how much has changed in just a few months. This time last year I was so unsure about everything..."</p>
+      </div>
+    </section>
+
+    {/* Demo Mood Journey */}
+    <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)", opacity: 0.6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600 }}>MOOD JOURNEY</p>
+        <span style={{ backgroundColor: "rgba(168,85,247,0.2)", color: "#a855f7", fontSize: "10px", padding: "2px 8px", borderRadius: "10px" }}>Example</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        {[
+          { month: "Jan", moods: [{ color: "#f472b6", pct: 40 }, { color: "#c084fc", pct: 35 }, { color: "#a855f7", pct: 25 }] },
+          { month: "Feb", moods: [{ color: "#c084fc", pct: 50 }, { color: "#f472b6", pct: 30 }, { color: "#6366f1", pct: 20 }] },
+          { month: "Mar", moods: [{ color: "#fb7185", pct: 45 }, { color: "#f472b6", pct: 35 }, { color: "#c084fc", pct: 20 }] },
+          { month: "Apr", moods: [{ color: "#f472b6", pct: 60 }, { color: "#fb7185", pct: 25 }, { color: "#c084fc", pct: 15 }] },
+        ].map((month, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "11px", width: "32px" }}>{month.month}</p>
+            <div style={{ flex: 1, display: "flex", height: "20px", borderRadius: "10px", overflow: "hidden" }}>
+              {month.moods.map((mood, j) => (
+                <div key={j} style={{ width: `${mood.pct}%`, backgroundColor: mood.color }} />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginTop: "16px", justifyContent: "center" }}>
+        {Object.entries(moodColors).map(([mood, color]) => (
+          <div key={mood} style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+            <div style={{ width: "8px", height: "8px", borderRadius: "9999px", backgroundColor: color }} />
+            <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "10px" }}>{mood}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Demo Dream Journal */}
+    <section style={{ backgroundColor: "rgba(236,72,153,0.1)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(236,72,153,0.2)", opacity: 0.6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <p style={{ color: "#ec4899", fontSize: "12px", fontWeight: 600 }}>DREAM JOURNAL</p>
+        <span style={{ backgroundColor: "rgba(236,72,153,0.2)", color: "#ec4899", fontSize: "10px", padding: "2px 8px", borderRadius: "10px" }}>Example</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        <div>
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "11px", marginBottom: "6px" }}>3 Jan 2025</p>
+          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.6, fontStyle: "italic" }}>I was flying over a city I didn't recognise. The buildings were made of glass and I could see everyone inside...</p>
+        </div>
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.05)", paddingTop: "16px" }}>
+          <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "11px", marginBottom: "6px" }}>28 Dec 2024</p>
+          <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "14px", lineHeight: 1.6, fontStyle: "italic" }}>My grandmother was there, even though she passed years ago. We were having tea and she told me everything would be okay...</p>
+        </div>
+      </div>
+    </section>
+
+    <div style={{ textAlign: "center", marginTop: "20px" }}>
+      <a href="/" style={{ display: "inline-block", padding: "14px 24px", borderRadius: "14px", background: "linear-gradient(135deg, #a855f7, #ec4899)", color: "white", textDecoration: "none", fontSize: "15px", fontWeight: 500 }}>Start chatting</a>
+    </div>
+  </>
+)}
 
             {onThisDay.length > 0 && (
               <section style={{ backgroundColor: "rgba(139,92,246,0.1)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(139,92,246,0.2)" }}>

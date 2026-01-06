@@ -273,16 +273,81 @@ export default function Reveal() {
               </section>
             )}
 
-            {/* Empty state */}
-            {people.length === 0 && topics.length === 0 && !insight && (
-              <div style={{ textAlign: "center", padding: "40px 20px" }}>
-                <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "15px", marginBottom: "16px" }}>Keep talking to MIRA to reveal patterns</p>
-                <a href="/" style={{ display: "inline-block", padding: "14px 24px", borderRadius: "14px", background: "linear-gradient(135deg, #a855f7, #ec4899)", color: "white", textDecoration: "none", fontSize: "15px", fontWeight: 500 }}>Start chatting</a>
-              </div>
-            )}
-          </>
-        )}
-      </main>
+           {/* Empty state with demo */}
+{people.length === 0 && topics.length === 0 && !insight && (
+  <>
+    <div style={{ textAlign: "center", padding: "20px", marginBottom: "20px" }}>
+      <p style={{ color: "rgba(255,255,255,0.6)", fontSize: "15px", marginBottom: "8px" }}>Start chatting to reveal your patterns</p>
+      <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "13px" }}>Here's what it could look like...</p>
     </div>
-  );
-}
+
+    {/* Demo Insight */}
+    <section style={{ background: "linear-gradient(135deg, rgba(168,85,247,0.15), rgba(236,72,153,0.15))", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(168,85,247,0.2)", opacity: 0.6 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
+        <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: "linear-gradient(135deg, #a855f7, #ec4899)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <span style={{ color: "white", fontSize: "12px", fontWeight: 700 }}>M</span>
+        </div>
+        <p style={{ color: "#a855f7", fontSize: "12px", fontWeight: 600 }}>MIRA'S INSIGHT</p>
+        <span style={{ backgroundColor: "rgba(168,85,247,0.2)", color: "#a855f7", fontSize: "10px", padding: "2px 8px", borderRadius: "10px", marginLeft: "auto" }}>Example</span>
+      </div>
+      <p style={{ color: "rgba(255,255,255,0.85)", fontSize: "15px", lineHeight: 1.6, fontStyle: "italic" }}>"You seem to think about work most on Sunday evenings. There's a pattern of anxiety before the week starts."</p>
+    </section>
+
+    {/* Demo Week */}
+    <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)", opacity: 0.6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600 }}>YOUR WEEK</p>
+        <span style={{ backgroundColor: "rgba(168,85,247,0.2)", color: "#a855f7", fontSize: "10px", padding: "2px 8px", borderRadius: "10px" }}>Example</span>
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day, i) => (
+          <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+            <div style={{ width: "36px", height: "36px", borderRadius: "9999px", backgroundColor: ["#f472b6", "#c084fc", "#fb7185", "#a855f7", "#6366f1", "#ec4899", "#8b5cf6"][i], boxShadow: `0 0 15px ${["#f472b6", "#c084fc", "#fb7185", "#a855f7", "#6366f1", "#ec4899", "#8b5cf6"][i]}40` }} />
+            <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "11px" }}>{day}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Demo People */}
+    <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)", opacity: 0.6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600 }}>PEOPLE IN YOUR LIFE</p>
+        <span style={{ backgroundColor: "rgba(168,85,247,0.2)", color: "#a855f7", fontSize: "10px", padding: "2px 8px", borderRadius: "10px" }}>Example</span>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        {[{ name: "Mum", count: 23 }, { name: "James", count: 15 }, { name: "Sarah", count: 8 }].map((person, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+            <div style={{ width: "40px", height: "40px", borderRadius: "9999px", background: `linear-gradient(135deg, ${["#ec4899", "#a855f7", "#6366f1"][i]}, ${["#f472b6", "#c084fc", "#818cf8"][i]})`, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <span style={{ color: "white", fontSize: "14px", fontWeight: 600 }}>{person.name[0]}</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <p style={{ color: "white", fontSize: "14px", fontWeight: 500 }}>{person.name}</p>
+              <p style={{ color: "rgba(255,255,255,0.4)", fontSize: "12px" }}>{person.count} mentions</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    {/* Demo Topics */}
+    <section style={{ backgroundColor: "rgba(255,255,255,0.03)", borderRadius: "20px", padding: "20px", marginBottom: "20px", border: "1px solid rgba(255,255,255,0.05)", opacity: 0.6 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", fontWeight: 600 }}>WHAT'S ON YOUR MIND</p>
+        <span style={{ backgroundColor: "rgba(168,85,247,0.2)", color: "#a855f7", fontSize: "10px", padding: "2px 8px", borderRadius: "10px" }}>Example</span>
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+        {[{ name: "Work", count: 34 }, { name: "Family", count: 21 }, { name: "Health", count: 12 }, { name: "Future", count: 9 }].map((topic, i) => (
+          <div key={i} style={{ padding: "10px 16px", borderRadius: "20px", backgroundColor: `rgba(${[168, 236, 139, 99][i]}, ${[85, 72, 92, 102][i]}, ${[247, 153, 246, 241][i]}, 0.15)`, border: `1px solid rgba(${[168, 236, 139, 99][i]}, ${[85, 72, 92, 102][i]}, ${[247, 153, 246, 241][i]}, 0.3)` }}>
+            <span style={{ color: "rgba(255,255,255,0.8)", fontSize: "13px" }}>{topic.name}</span>
+            <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "12px", marginLeft: "6px" }}>{topic.count}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <div style={{ textAlign: "center", marginTop: "20px" }}>
+      <a href="/" style={{ display: "inline-block", padding: "14px 24px", borderRadius: "14px", background: "linear-gradient(135deg, #a855f7, #ec4899)", color: "white", textDecoration: "none", fontSize: "15px", fontWeight: 500 }}>Start chatting</a>
+    </div>
+  </>
+)}
