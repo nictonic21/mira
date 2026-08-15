@@ -119,21 +119,23 @@ export default function LogEntryModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 sm:items-center"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-ink/40 p-4 backdrop-blur-sm sm:items-center"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md rounded-3xl bg-card p-6 shadow-xl"
+        className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-[2rem] bg-card p-7 shadow-soft"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-5 text-lg font-semibold">Log a moment</h2>
+        <h2 className="mb-6 font-serif text-2xl font-semibold">Log a moment</h2>
 
         {/* Who */}
-        <label className="mb-1 block text-sm text-muted">Who did you see?</label>
+        <label className="mb-1.5 block text-sm font-medium text-muted">
+          Who did you see?
+        </label>
         <select
           value={friendId}
           onChange={(e) => setFriendId(e.target.value)}
-          className="mb-5 w-full rounded-xl border border-line bg-cream px-4 py-3 text-sm outline-none"
+          className="mb-6 w-full rounded-2xl border border-line bg-cream px-4 py-3 text-sm outline-none transition focus:border-accent"
         >
           {friends.map((f) => (
             <option key={f.id} value={f.id}>
@@ -143,8 +145,9 @@ export default function LogEntryModal({
         </select>
 
         {/* Energy */}
-        <label className="mb-1 block text-sm text-muted">
-          Energy after — <span className="text-ink">{ENERGY_WORDS[energy - 1]}</span>
+        <label className="mb-1.5 block text-sm font-medium text-muted">
+          Energy after —{" "}
+          <span className="font-semibold text-ink">{ENERGY_WORDS[energy - 1]}</span>
         </label>
         <input
           type="range"
@@ -154,21 +157,23 @@ export default function LogEntryModal({
           onChange={(e) => setEnergy(Number(e.target.value))}
           className="w-full accent-accent"
         />
-        <div className="mb-5 flex justify-between text-xs text-muted">
+        <div className="mb-6 flex justify-between text-xs text-muted">
           <span>Drained</span>
           <span>Energised</span>
         </div>
 
         {/* Effort */}
-        <label className="mb-1 block text-sm text-muted">Who made the effort?</label>
-        <div className="mb-5 grid grid-cols-3 gap-2">
+        <label className="mb-1.5 block text-sm font-medium text-muted">
+          Who made the effort?
+        </label>
+        <div className="mb-6 grid grid-cols-3 gap-2">
           {(["me", "them", "mutual"] as Effort[]).map((opt) => (
             <button
               key={opt}
               onClick={() => setEffort(opt)}
-              className={`rounded-xl border px-3 py-2 text-sm capitalize transition ${
+              className={`rounded-2xl border px-3 py-2.5 text-sm font-medium capitalize transition ${
                 effort === opt
-                  ? "border-accent bg-accent-soft text-accent"
+                  ? "border-accent bg-accent-soft text-accent-deep"
                   : "border-line bg-cream text-muted hover:text-ink"
               }`}
             >
@@ -178,15 +183,17 @@ export default function LogEntryModal({
         </div>
 
         {/* Tags */}
-        <label className="mb-1 block text-sm text-muted">How was it? (optional)</label>
-        <div className="mb-5 flex flex-wrap gap-2">
+        <label className="mb-1.5 block text-sm font-medium text-muted">
+          How was it? (optional)
+        </label>
+        <div className="mb-6 flex flex-wrap gap-2">
           {TAGS.map((tag) => (
             <button
               key={tag}
               onClick={() => toggleTag(tag)}
-              className={`rounded-full border px-3 py-1.5 text-xs transition ${
+              className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
                 tags.includes(tag)
-                  ? "border-accent bg-accent-soft text-accent"
+                  ? "border-accent bg-accent-soft text-accent-deep"
                   : "border-line bg-cream text-muted hover:text-ink"
               }`}
             >
@@ -199,31 +206,33 @@ export default function LogEntryModal({
         {!showDeep ? (
           <button
             onClick={() => setShowDeep(true)}
-            className="mb-5 text-sm text-accent"
+            className="mb-6 text-sm font-semibold text-accent"
           >
             + Go deeper
           </button>
         ) : (
-          <div className="mb-5 space-y-3">
+          <div className="mb-6 space-y-3">
             <div>
-              <label className="mb-1 block text-sm text-muted">What happened?</label>
+              <label className="mb-1.5 block text-sm font-medium text-muted">
+                What happened?
+              </label>
               <textarea
                 value={whatHappened}
                 onChange={(e) => setWhatHappened(e.target.value)}
                 rows={3}
-                className="w-full rounded-xl border border-line bg-cream px-4 py-3 text-sm outline-none"
+                className="w-full rounded-2xl border border-line bg-cream px-4 py-3 text-sm outline-none transition focus:border-accent"
                 placeholder="We grabbed coffee and…"
               />
             </div>
             <div>
-              <label className="mb-1 block text-sm text-muted">
+              <label className="mb-1.5 block text-sm font-medium text-muted">
                 How did you feel after?
               </label>
               <textarea
                 value={howIFelt}
                 onChange={(e) => setHowIFelt(e.target.value)}
                 rows={2}
-                className="w-full rounded-xl border border-line bg-cream px-4 py-3 text-sm outline-none"
+                className="w-full rounded-2xl border border-line bg-cream px-4 py-3 text-sm outline-none transition focus:border-accent"
                 placeholder="Honestly, I felt…"
               />
             </div>
@@ -235,16 +244,16 @@ export default function LogEntryModal({
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 rounded-xl border border-line py-3 text-sm text-muted transition hover:text-ink"
+            className="flex-1 rounded-full border border-line py-3 text-sm font-medium text-muted transition hover:text-ink"
           >
             Cancel
           </button>
           <button
             onClick={save}
             disabled={saving || friends.length === 0}
-            className="flex-1 rounded-xl bg-accent py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+            className="grad-accent flex-1 rounded-full py-3 text-sm font-semibold text-white shadow-soft transition hover:brightness-105 disabled:opacity-50"
           >
-            {saving ? "Saving…" : "Save"}
+            {saving ? "Saving…" : "Save moment"}
           </button>
         </div>
       </div>

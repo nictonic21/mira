@@ -1,23 +1,49 @@
 @import "tailwindcss";
 
-/* Soft, feminine palette: blush background, rose accent, plum ink,
-   mint for relationships that feed you, apricot for ones costing energy.
-   (Token names kept from the first pass — "cream" is now blush, etc.) */
+/* Warm, feminine palette: peachy-blush background, rose-coral accent,
+   plum ink, mint for relationships that feed you, apricot for ones
+   costing energy. (Token names kept from the first pass.) */
 @theme {
-  --color-cream: #fdf2f6;
+  --color-cream: #fdf1ed;
   --color-card: #ffffff;
-  --color-ink: #432b39;
-  --color-muted: #a0798e;
-  --color-line: #f4dce7;
-  --color-accent: #c94f7c;
-  --color-accent-soft: #fbe3ee;
-  --color-sage: #55917c;
-  --color-sage-soft: #e3f1ea;
-  --color-clay: #bd6f4e;
-  --color-clay-soft: #f9e8df;
+  --color-ink: #4a2632;
+  --color-muted: #a97f8b;
+  --color-line: #f6ddda;
+  --color-accent: #d6536d;
+  --color-accent-deep: #b93d5e;
+  --color-accent-soft: #fce6e6;
+  --color-sage: #5b9279;
+  --color-sage-soft: #e5f2ea;
+  --color-clay: #c4764a;
+  --color-clay-soft: #faeadd;
+
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), Georgia, serif;
 }
 
 body {
   background-color: var(--color-cream);
+  background-image:
+    radial-gradient(60rem 40rem at 110% -10%, #fbdce6 0%, transparent 60%),
+    radial-gradient(50rem 35rem at -20% 110%, #fde4d3 0%, transparent 55%);
+  background-attachment: fixed;
   color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Shared decorative helpers */
+.grad-accent {
+  background-image: linear-gradient(135deg, #ea7189, #cf4d74);
+}
+
+.grad-hero {
+  background-image: linear-gradient(135deg, #fde5da 0%, #fbdae4 55%, #f8d2e0 100%);
+}
+
+.shadow-soft {
+  box-shadow: 0 14px 34px -16px rgba(190, 80, 110, 0.28);
+}
+
+.shadow-softer {
+  box-shadow: 0 8px 24px -14px rgba(190, 80, 110, 0.18);
 }

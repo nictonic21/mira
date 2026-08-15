@@ -18,6 +18,8 @@ import {
   MIN_ENTRIES_FOR_SCORE,
 } from "../../../lib/types";
 import Nav from "../../components/Nav";
+import Avatar from "../../components/Avatar";
+import ScoreRing from "../../components/ScoreRing";
 import LogEntryModal from "../../components/LogEntryModal";
 import TrendChart from "../../components/TrendChart";
 
@@ -153,79 +155,83 @@ export default function FriendProfile() {
       <Nav onLogClick={() => setShowLog(true)} />
       <main className="mx-auto max-w-3xl space-y-6 px-5 py-8 pb-24">
         {/* Header */}
-        <header className="flex items-center gap-4">
-          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-accent-soft text-2xl font-medium text-accent">
-            {friend.name.charAt(0).toUpperCase()}
-          </span>
+        <header className="grad-hero flex items-center gap-5 rounded-[2rem] p-7 shadow-soft">
+          <Avatar name={friend.name} size={72} />
           <div className="flex-1">
-            <h1 className="text-2xl font-semibold">{friend.name}</h1>
+            <h1 className="font-serif text-3xl font-semibold">{friend.name}</h1>
             {friend.relationship_type && (
-              <p className="text-sm capitalize text-muted">
+              <p className="mt-1 inline-block rounded-full bg-card/70 px-3 py-1 text-xs font-medium capitalize text-muted">
                 {friend.relationship_type}
               </p>
             )}
           </div>
-          <div className="text-center">
-            {score !== null ? (
-              <>
-                <p className="text-3xl font-semibold">{score}</p>
-                <p className="text-xs text-muted">out of 100</p>
-              </>
-            ) : (
-              <p className="max-w-28 text-xs text-muted">
-                {MIN_ENTRIES_FOR_SCORE - entries.length} more{" "}
-                {MIN_ENTRIES_FOR_SCORE - entries.length === 1
-                  ? "moment"
-                  : "moments"}{" "}
-                until a score appears
-              </p>
-            )}
-          </div>
+          {score !== null ? (
+            <ScoreRing score={score} size={104} strokeWidth={9} />
+          ) : (
+            <p className="max-w-32 text-right text-xs leading-relaxed text-muted">
+              {MIN_ENTRIES_FOR_SCORE - entries.length} more{" "}
+              {MIN_ENTRIES_FOR_SCORE - entries.length === 1
+                ? "moment"
+                : "moments"}{" "}
+              until their score appears
+            </p>
+          )}
         </header>
 
         {/* Trend */}
-        <section className="rounded-3xl bg-card p-6">
-          <h2 className="mb-4 font-semibold">The last twelve months</h2>
+        <section className="rounded-[2rem] bg-card p-7 shadow-softer">
+          <h2 className="mb-4 font-serif text-xl font-semibold">
+            The last twelve months
+          </h2>
           <TrendChart points={monthlyTrend(entries)} />
         </section>
 
         {/* Stats */}
         <div className="grid gap-3 sm:grid-cols-3">
-          <section className="rounded-3xl bg-card p-5">
-            <h3 className="mb-2 text-sm text-muted">Effort balance</h3>
+          <section className="rounded-3xl bg-card p-5 shadow-softer">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+              Effort balance
+            </h3>
             {ratio === null ? (
               <p className="text-sm text-muted">Log a moment to see this</p>
             ) : (
               <>
-                <div className="mb-2 flex h-2 overflow-hidden rounded-full bg-line">
+                <div className="mb-2.5 flex h-2.5 overflow-hidden rounded-full bg-line">
                   <div
-                    className="bg-accent"
+                    className="grad-accent rounded-full"
                     style={{ width: `${Math.round(ratio * 100)}%` }}
                   />
                 </div>
-                <p className="text-sm">
+                <p className="text-sm leading-snug">
                   You initiate{" "}
-                  <span className="font-semibold">{Math.round(ratio * 100)}%</span>{" "}
+                  <span className="font-serif text-lg font-semibold">
+                    {Math.round(ratio * 100)}%
+                  </span>{" "}
                   of the time
                 </p>
               </>
             )}
           </section>
 
-          <section className="rounded-3xl bg-card p-5">
-            <h3 className="mb-2 text-sm text-muted">Frequency</h3>
-            <p className="text-sm">
-              <span className="font-semibold">{perMonth}</span> moments a month
+          <section className="rounded-3xl bg-card p-5 shadow-softer">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+              Frequency
+            </h3>
+            <p className="text-sm leading-snug">
+              <span className="font-serif text-lg font-semibold">{perMonth}</span>{" "}
+              moments a month
             </p>
             {quiet !== null && (
-              <p className="mt-1 text-sm text-muted">
+              <p className="mt-1.5 text-sm text-muted">
                 Last logged {quiet === 0 ? "today" : `${quiet} days ago`}
               </p>
             )}
           </section>
 
-          <section className="rounded-3xl bg-card p-5">
-            <h3 className="mb-2 text-sm text-muted">Most common</h3>
+          <section className="rounded-3xl bg-card p-5 shadow-softer">
+            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
+              Most common
+            </h3>
             {tags.length === 0 ? (
               <p className="text-sm text-muted">No tags yet</p>
             ) : (
@@ -233,7 +239,7 @@ export default function FriendProfile() {
                 {tags.map(({ tag }) => (
                   <span
                     key={tag}
-                    className="rounded-full bg-cream px-2.5 py-1 text-xs"
+                    className="rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent-deep"
                   >
                     {tag}
                   </span>
@@ -244,19 +250,21 @@ export default function FriendProfile() {
         </div>
 
         {/* AI summary */}
-        <section className="rounded-3xl bg-card p-6">
+        <section className="rounded-[2rem] bg-card p-7 shadow-softer">
           <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-semibold">In plain language</h2>
+            <h2 className="font-serif text-xl font-semibold">
+              In plain language
+            </h2>
             <button
               onClick={reflect}
               disabled={summarising || entries.length === 0}
-              className="rounded-full border border-accent px-4 py-1.5 text-sm text-accent transition hover:bg-accent-soft disabled:opacity-50"
+              className="grad-accent rounded-full px-5 py-2 text-sm font-semibold text-white shadow-soft transition hover:brightness-105 disabled:opacity-50"
             >
               {summarising ? "Reflecting…" : summary ? "Refresh" : "Reflect"}
             </button>
           </div>
           {summary ? (
-            <p className="text-sm leading-relaxed">{summary}</p>
+            <p className="leading-relaxed">{summary}</p>
           ) : (
             <p className="text-sm text-muted">
               {entries.length === 0
@@ -268,19 +276,22 @@ export default function FriendProfile() {
 
         {/* Entries */}
         <section>
-          <h2 className="mb-3 font-semibold">Moments</h2>
+          <h2 className="mb-3 font-serif text-xl font-semibold">Moments</h2>
           {entries.length === 0 ? (
-            <p className="rounded-3xl bg-card p-6 text-sm text-muted">
+            <p className="rounded-3xl bg-card p-6 text-sm text-muted shadow-softer">
               Nothing here yet. After you next see {friend.name}, take fifteen
               seconds to log it.
             </p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {entries.map((e) => {
                 const a = analysisByEntry.get(e.id);
                 return (
-                  <li key={e.id} className="rounded-2xl bg-card p-4 text-sm">
-                    <div className="mb-1 flex items-center justify-between">
+                  <li
+                    key={e.id}
+                    className="rounded-3xl bg-card p-5 text-sm shadow-softer"
+                  >
+                    <div className="mb-1.5 flex items-center justify-between">
                       <span className="text-xs text-muted">
                         {new Date(e.created_at).toLocaleDateString("en-GB", {
                           day: "numeric",
@@ -288,8 +299,8 @@ export default function FriendProfile() {
                           year: "numeric",
                         })}
                       </span>
-                      <span className="text-xs text-muted">
-                        energy {e.energy_score}/10 · effort: {e.effort}
+                      <span className="rounded-full bg-cream px-2.5 py-0.5 text-xs text-muted">
+                        energy {e.energy_score}/10 · {e.effort}
                       </span>
                     </div>
                     {e.tags?.length > 0 && (
@@ -297,7 +308,7 @@ export default function FriendProfile() {
                         {e.tags.map((t) => (
                           <span
                             key={t}
-                            className="rounded-full bg-cream px-2 py-0.5 text-xs text-muted"
+                            className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs text-accent-deep"
                           >
                             {t}
                           </span>
@@ -309,7 +320,7 @@ export default function FriendProfile() {
                       <p className="mt-1 text-muted">Felt: {e.how_i_felt}</p>
                     )}
                     {a && (
-                      <p className="mt-2 border-t border-line pt-2 text-xs italic text-muted">
+                      <p className="mt-2.5 border-t border-line pt-2.5 text-xs italic text-muted">
                         {a.ai_note}
                       </p>
                     )}
@@ -321,26 +332,26 @@ export default function FriendProfile() {
         </section>
 
         {/* Manage — deletion easy and obvious */}
-        <section className="rounded-3xl border border-line p-6">
-          <h2 className="mb-3 font-semibold">Manage</h2>
+        <section className="rounded-[2rem] border border-line/70 bg-card/60 p-7">
+          <h2 className="mb-3 font-serif text-xl font-semibold">Manage</h2>
           <div className="flex flex-wrap gap-3 text-sm">
             <button
               onClick={archiveFriend}
-              className="rounded-xl border border-line px-4 py-2 text-muted transition hover:text-ink"
+              className="rounded-full border border-line bg-card px-5 py-2.5 font-medium text-muted transition hover:text-ink"
             >
               Archive {friend.name}
             </button>
             {!confirmDelete ? (
               <button
                 onClick={() => setConfirmDelete(true)}
-                className="rounded-xl border border-line px-4 py-2 text-muted transition hover:text-accent"
+                className="rounded-full border border-line bg-card px-5 py-2.5 font-medium text-muted transition hover:border-accent hover:text-accent"
               >
                 Delete {friend.name} and all their logs
               </button>
             ) : (
               <button
                 onClick={deleteFriend}
-                className="rounded-xl bg-accent px-4 py-2 font-medium text-white"
+                className="grad-accent rounded-full px-5 py-2.5 font-semibold text-white shadow-soft"
               >
                 Yes, delete everything about {friend.name}
               </button>

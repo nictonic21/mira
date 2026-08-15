@@ -1,5 +1,16 @@
 import type { Metadata } from "next";
+import { Fraunces, Nunito_Sans } from "next/font/google";
 import "./globals.css";
+
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  variable: "--font-fraunces",
+});
+
+const nunito = Nunito_Sans({
+  subsets: ["latin"],
+  variable: "--font-nunito",
+});
 
 export const metadata: Metadata = {
   title: "Circle",
@@ -13,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${fraunces.variable} ${nunito.variable}`}>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   );

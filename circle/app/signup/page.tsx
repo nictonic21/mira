@@ -45,13 +45,18 @@ export default function Signup() {
   if (confirmSent) {
     return (
       <main className="flex min-h-screen items-center justify-center px-6 text-center">
-        <div className="max-w-sm">
-          <h1 className="mb-3 text-2xl font-semibold">Check your inbox</h1>
+        <div className="max-w-sm rounded-[2rem] bg-card p-8 shadow-soft">
+          <h1 className="mb-3 font-serif text-3xl font-semibold">
+            Check your inbox
+          </h1>
           <p className="text-muted">
             We&apos;ve sent a confirmation link to {email}. Once you&apos;ve
             confirmed, sign in and you&apos;re in.
           </p>
-          <Link href="/login" className="mt-6 inline-block font-medium text-accent">
+          <Link
+            href="/login"
+            className="mt-6 inline-block font-semibold text-accent"
+          >
             Go to sign in
           </Link>
         </div>
@@ -61,19 +66,21 @@ export default function Signup() {
 
   return (
     <main className="flex min-h-screen items-center justify-center px-6">
-      <div className="w-full max-w-sm">
+      <div className="w-full max-w-sm rounded-[2rem] bg-card p-8 shadow-soft">
         <div className="mb-8 text-center">
-          <span className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-accent text-lg font-semibold text-white">
+          <span className="grad-accent mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full font-serif text-xl text-white shadow-softer">
             C
           </span>
-          <h1 className="text-2xl font-semibold">Create your Circle</h1>
+          <h1 className="font-serif text-3xl font-semibold">
+            Create your Circle
+          </h1>
           <p className="mt-2 text-sm text-muted">
             Private by default. Only you ever see what you log.
           </p>
         </div>
 
         {error && (
-          <p className="mb-4 rounded-xl bg-accent-soft px-4 py-3 text-sm text-accent">
+          <p className="mb-4 rounded-2xl bg-accent-soft px-4 py-3 text-sm text-accent-deep">
             {error}
           </p>
         )}
@@ -84,19 +91,19 @@ export default function Signup() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Email"
-            className="w-full rounded-xl border border-line bg-card px-4 py-3 text-sm outline-none focus:border-accent"
+            className="w-full rounded-2xl border border-line bg-cream px-4 py-3.5 text-sm outline-none transition focus:border-accent"
           />
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password (8+ characters)"
-            className="w-full rounded-xl border border-line bg-card px-4 py-3 text-sm outline-none focus:border-accent"
+            className="w-full rounded-2xl border border-line bg-cream px-4 py-3.5 text-sm outline-none transition focus:border-accent"
           />
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-accent py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+            className="grad-accent w-full rounded-full py-3.5 text-sm font-semibold text-white shadow-soft transition hover:brightness-105 disabled:opacity-50"
           >
             {loading ? "Creating…" : "Create account"}
           </button>
@@ -104,7 +111,7 @@ export default function Signup() {
 
         <p className="mt-6 text-center text-sm text-muted">
           Already have an account?{" "}
-          <Link href="/login" className="font-medium text-accent">
+          <Link href="/login" className="font-semibold text-accent">
             Sign in
           </Link>
         </p>

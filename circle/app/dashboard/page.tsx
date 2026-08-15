@@ -16,6 +16,8 @@ import {
   RELATIONSHIP_TYPES,
 } from "../../lib/types";
 import Nav from "../components/Nav";
+import Avatar from "../components/Avatar";
+import ScoreRing from "../components/ScoreRing";
 import LogEntryModal from "../components/LogEntryModal";
 
 interface FriendStats {
@@ -100,6 +102,13 @@ export default function Dashboard() {
     (s) => s.daysQuiet !== null && s.daysQuiet > 60
   );
 
+  // This month's energised vs drained split.
+  const cutoff = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const recent = entries.filter((e) => e.created_at >= cutoff);
+  const energised = recent.filter((e) => e.energy_score >= 6).length;
+  const drained = recent.filter((e) => e.energy_score <= 4).length;
+  const neutral = recent.length - energised - drained;
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center text-muted">
@@ -114,29 +123,90 @@ export default function Dashboard() {
       <main className="mx-auto max-w-3xl space-y-10 px-5 py-8 pb-24">
         {/* Empty state */}
         {friends.length === 0 && (
-          <div className="rounded-3xl bg-card p-8 text-center">
-            <h2 className="mb-2 text-lg font-semibold">Your circle is empty</h2>
-            <p className="mb-6 text-sm text-muted">
+          <div className="grad-hero rounded-[2rem] p-10 text-center shadow-soft">
+            <h2 className="mb-2 font-serif text-2xl font-semibold">
+              Your circle is empty
+            </h2>
+            <p className="mx-auto mb-7 max-w-sm text-muted">
               Add the people you see most, then log a moment after you next see
               them.
             </p>
             <Link
               href="/onboarding"
-              className="rounded-full bg-accent px-6 py-3 text-sm font-medium text-white"
+              className="grad-accent rounded-full px-7 py-3 font-semibold text-white shadow-soft"
             >
               Add friends
             </Link>
           </div>
         )}
 
+        {/* This month hero */}
+        {recent.length > 0 && (
+          <section className="grad-hero rounded-[2rem] p-7 shadow-soft">
+            <div className="mb-5 flex items-end justify-between">
+              <div>
+                <h1 className="font-serif text-2xl font-semibold">
+                  Your month so far
+                </h1>
+                <p className="mt-1 text-sm text-muted">
+                  {recent.length} {recent.length === 1 ? "moment" : "moments"}{" "}
+                  across {new Set(recent.map((e) => e.friend_id)).size} people
+                </p>
+              </div>
+              <p className="hidden text-right text-sm text-muted sm:block">
+                {new Date().toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                })}
+              </p>
+            </div>
+
+            {/* energised vs drained split */}
+            <div className="flex h-3.5 gap-0.5 overflow-hidden rounded-full">
+              {energised > 0 && (
+                <div
+                  className="rounded-full bg-sage"
+                  style={{ flex: energised }}
+                />
+              )}
+              {neutral > 0 && (
+                <div
+                  className="rounded-full bg-card/80"
+                  style={{ flex: neutral }}
+                />
+              )}
+              {drained > 0 && (
+                <div
+                  className="rounded-full bg-clay"
+                  style={{ flex: drained }}
+                />
+              )}
+            </div>
+            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-sage" />
+                {energised} left you energised
+              </span>
+              <span className="flex items-center gap-1.5 text-muted">
+                <span className="h-2 w-2 rounded-full bg-card" />
+                {neutral} neutral
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="h-2 w-2 rounded-full bg-clay" />
+                {drained} left you drained
+              </span>
+            </div>
+          </section>
+        )}
+
         {/* Your circle, ranked */}
         {friends.length > 0 && (
           <section>
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold">Your circle</h2>
+              <h2 className="font-serif text-2xl font-semibold">Your circle</h2>
               <button
                 onClick={() => setShowAddFriend((v) => !v)}
-                className="text-sm text-accent"
+                className="rounded-full border border-line bg-card px-4 py-2 text-sm font-semibold text-accent shadow-softer transition hover:border-accent"
               >
                 + Add friend
               </button>
@@ -145,13 +215,13 @@ export default function Dashboard() {
             {showAddFriend && (
               <form
                 onSubmit={addFriend}
-                className="mb-4 space-y-3 rounded-2xl bg-card p-4"
+                className="mb-4 space-y-3 rounded-3xl bg-card p-5 shadow-softer"
               >
                 <input
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="Their name"
-                  className="w-full rounded-xl border border-line bg-cream px-4 py-3 text-sm outline-none focus:border-accent"
+                  className="w-full rounded-2xl border border-line bg-cream px-4 py-3 text-sm outline-none transition focus:border-accent"
                 />
                 <div className="flex flex-wrap gap-2">
                   {RELATIONSHIP_TYPES.map((t) => (
@@ -159,9 +229,9 @@ export default function Dashboard() {
                       key={t}
                       type="button"
                       onClick={() => setNewType(t)}
-                      className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                      className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
                         newType === t
-                          ? "border-accent bg-accent-soft text-accent"
+                          ? "border-accent bg-accent-soft text-accent-deep"
                           : "border-line bg-cream text-muted"
                       }`}
                     >
@@ -171,27 +241,25 @@ export default function Dashboard() {
                 </div>
                 <button
                   type="submit"
-                  className="rounded-xl bg-accent px-5 py-2.5 text-sm font-medium text-white"
+                  className="grad-accent rounded-full px-6 py-2.5 text-sm font-semibold text-white shadow-soft"
                 >
                   Add
                 </button>
               </form>
             )}
 
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {[...stats]
                 .sort((a, b) => (b.score ?? -1) - (a.score ?? -1))
                 .map(({ friend, entries: fe, score }) => (
                   <li key={friend.id}>
                     <Link
                       href={`/friends/${friend.id}`}
-                      className="flex items-center gap-4 rounded-2xl bg-card p-4 transition hover:shadow-sm"
+                      className="flex items-center gap-4 rounded-3xl bg-card p-4 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                     >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent-soft font-medium text-accent">
-                        {friend.name.charAt(0).toUpperCase()}
-                      </span>
+                      <Avatar name={friend.name} size={48} />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-medium">{friend.name}</p>
+                        <p className="truncate font-semibold">{friend.name}</p>
                         <p className="text-xs text-muted">
                           {fe.length === 0
                             ? "No moments logged yet"
@@ -201,23 +269,12 @@ export default function Dashboard() {
                         </p>
                       </div>
                       {score !== null && (
-                        <div className="flex items-center gap-3">
-                          <div className="h-1.5 w-20 overflow-hidden rounded-full bg-line">
-                            <div
-                              className={`h-full rounded-full ${
-                                score >= 65
-                                  ? "bg-sage"
-                                  : score >= 50
-                                    ? "bg-accent"
-                                    : "bg-clay"
-                              }`}
-                              style={{ width: `${score}%` }}
-                            />
-                          </div>
-                          <span className="w-8 text-right text-sm font-semibold">
-                            {score}
-                          </span>
-                        </div>
+                        <ScoreRing
+                          score={score}
+                          size={52}
+                          strokeWidth={5}
+                          showLabel={false}
+                        />
                       )}
                     </Link>
                   </li>
@@ -229,7 +286,9 @@ export default function Dashboard() {
         {/* Ones to protect */}
         {toProtect.length > 0 && (
           <section>
-            <h2 className="mb-1 text-lg font-semibold">Ones to protect</h2>
+            <h2 className="mb-1 font-serif text-2xl font-semibold">
+              Ones to protect
+            </h2>
             <p className="mb-4 text-sm text-muted">
               These friendships consistently leave you better than they found
               you.
@@ -239,12 +298,16 @@ export default function Dashboard() {
                 <Link
                   key={friend.id}
                   href={`/friends/${friend.id}`}
-                  className="rounded-2xl border border-sage-soft bg-sage-soft/60 p-4 transition hover:shadow-sm"
+                  className="rounded-3xl bg-sage-soft p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                 >
-                  <p className="font-medium">{friend.name}</p>
-                  <p className="mt-1 text-sm text-sage">
-                    ● {score} — feeding you
-                  </p>
+                  <div className="mb-3 flex items-center justify-between">
+                    <Avatar name={friend.name} size={40} />
+                    <span className="font-serif text-2xl font-semibold text-sage">
+                      {score}
+                    </span>
+                  </div>
+                  <p className="font-semibold">{friend.name}</p>
+                  <p className="mt-0.5 text-sm text-sage">feeding you</p>
                 </Link>
               ))}
             </div>
@@ -254,7 +317,7 @@ export default function Dashboard() {
         {/* Costing you */}
         {costing.length > 0 && (
           <section>
-            <h2 className="mb-1 text-lg font-semibold">
+            <h2 className="mb-1 font-serif text-2xl font-semibold">
               Taking more than they give
             </h2>
             <p className="mb-4 text-sm text-muted">
@@ -266,12 +329,16 @@ export default function Dashboard() {
                 <Link
                   key={friend.id}
                   href={`/friends/${friend.id}`}
-                  className="rounded-2xl border border-clay-soft bg-clay-soft/60 p-4 transition hover:shadow-sm"
+                  className="rounded-3xl bg-clay-soft p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                 >
-                  <p className="font-medium">{friend.name}</p>
-                  <p className="mt-1 text-sm text-clay">
-                    ● {score} — costing energy
-                  </p>
+                  <div className="mb-3 flex items-center justify-between">
+                    <Avatar name={friend.name} size={40} />
+                    <span className="font-serif text-2xl font-semibold text-clay">
+                      {score}
+                    </span>
+                  </div>
+                  <p className="font-semibold">{friend.name}</p>
+                  <p className="mt-0.5 text-sm text-clay">costing energy</p>
                 </Link>
               ))}
             </div>
@@ -281,19 +348,24 @@ export default function Dashboard() {
         {/* Going quiet */}
         {goingQuiet.length > 0 && (
           <section>
-            <h2 className="mb-1 text-lg font-semibold">Going quiet</h2>
+            <h2 className="mb-1 font-serif text-2xl font-semibold">
+              Going quiet
+            </h2>
             <p className="mb-4 text-sm text-muted">
               Nothing logged in over sixty days. Maybe worth a message?
             </p>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {goingQuiet.map(({ friend, daysQuiet }) => (
                 <li key={friend.id}>
                   <Link
                     href={`/friends/${friend.id}`}
-                    className="flex items-center justify-between rounded-2xl bg-card p-4 text-sm transition hover:shadow-sm"
+                    className="flex items-center gap-4 rounded-3xl bg-card p-4 text-sm shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                   >
-                    <span className="font-medium">{friend.name}</span>
-                    <span className="text-muted">{daysQuiet} days</span>
+                    <Avatar name={friend.name} size={40} />
+                    <span className="flex-1 font-semibold">{friend.name}</span>
+                    <span className="rounded-full bg-cream px-3 py-1 text-xs text-muted">
+                      {daysQuiet} days quiet
+                    </span>
                   </Link>
                 </li>
               ))}

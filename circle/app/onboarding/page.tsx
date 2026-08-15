@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { requireAuth, supabase } from "../../lib/supabase";
 import { RELATIONSHIP_TYPES } from "../../lib/types";
+import Avatar from "../components/Avatar";
 
 interface Draft {
   name: string;
@@ -57,17 +58,22 @@ export default function Onboarding() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-12">
-      <h1 className="mb-2 text-2xl font-semibold">Who&apos;s in your circle?</h1>
-      <p className="mb-8 text-sm text-muted">
+      <h1 className="mb-2 font-serif text-3xl font-semibold">
+        Who&apos;s in your circle?
+      </h1>
+      <p className="mb-8 text-muted">
         Add the people you see or speak to most. You can always add more later.
       </p>
 
-      <form onSubmit={addFriend} className="mb-4 space-y-3">
+      <form
+        onSubmit={addFriend}
+        className="mb-4 space-y-3 rounded-[2rem] bg-card p-6 shadow-softer"
+      >
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Their name"
-          className="w-full rounded-xl border border-line bg-card px-4 py-3 text-sm outline-none focus:border-accent"
+          className="w-full rounded-2xl border border-line bg-cream px-4 py-3.5 text-sm outline-none transition focus:border-accent"
         />
         <div className="flex flex-wrap gap-2">
           {RELATIONSHIP_TYPES.map((t) => (
@@ -75,10 +81,10 @@ export default function Onboarding() {
               key={t}
               type="button"
               onClick={() => setType(t)}
-              className={`rounded-full border px-3 py-1.5 text-xs transition ${
+              className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
                 type === t
-                  ? "border-accent bg-accent-soft text-accent"
-                  : "border-line bg-card text-muted hover:text-ink"
+                  ? "border-accent bg-accent-soft text-accent-deep"
+                  : "border-line bg-cream text-muted hover:text-ink"
               }`}
             >
               {t}
@@ -87,7 +93,7 @@ export default function Onboarding() {
         </div>
         <button
           type="submit"
-          className="w-full rounded-xl border border-accent py-3 text-sm font-medium text-accent transition hover:bg-accent-soft"
+          className="w-full rounded-full border border-accent py-3 text-sm font-semibold text-accent transition hover:bg-accent-soft"
         >
           Add to circle
         </button>
@@ -98,14 +104,16 @@ export default function Onboarding() {
           {added.map((f, i) => (
             <li
               key={i}
-              className="flex items-center justify-between rounded-xl bg-card px-4 py-3 text-sm"
+              className="flex items-center gap-3 rounded-2xl bg-card px-4 py-3 text-sm shadow-softer"
             >
-              <span>
-                {f.name} <span className="text-muted">· {f.type}</span>
+              <Avatar name={f.name} size={36} />
+              <span className="flex-1">
+                <span className="font-semibold">{f.name}</span>{" "}
+                <span className="text-muted">· {f.type}</span>
               </span>
               <button
                 onClick={() => setAdded((prev) => prev.filter((_, j) => j !== i))}
-                className="text-xs text-muted hover:text-accent"
+                className="text-xs text-muted transition hover:text-accent"
               >
                 Remove
               </button>
@@ -119,7 +127,7 @@ export default function Onboarding() {
       <button
         onClick={finish}
         disabled={saving}
-        className="w-full rounded-xl bg-accent py-3 text-sm font-medium text-white transition hover:opacity-90 disabled:opacity-50"
+        className="grad-accent w-full rounded-full py-3.5 font-semibold text-white shadow-soft transition hover:brightness-105 disabled:opacity-50"
       >
         {saving
           ? "Saving…"
