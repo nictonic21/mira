@@ -123,10 +123,11 @@ export default function LogEntryModal({
       onClick={onClose}
     >
       <div
-        className="max-h-[92vh] w-full max-w-md overflow-y-auto rounded-[2rem] bg-card p-7 shadow-soft"
+        className="card-edge max-h-[92vh] w-full max-w-md overflow-y-auto rounded-[2rem] bg-card p-7 shadow-soft"
         onClick={(e) => e.stopPropagation()}
       >
-        <h2 className="mb-6 font-serif text-2xl font-semibold">Log a moment</h2>
+        <p className="eyebrow mb-1">Fifteen seconds</p>
+        <h2 className="mb-6 font-serif text-3xl font-semibold">Log a moment</h2>
 
         {/* Who */}
         <label className="mb-1.5 block text-sm font-medium text-muted">
@@ -155,7 +156,7 @@ export default function LogEntryModal({
           max={10}
           value={energy}
           onChange={(e) => setEnergy(Number(e.target.value))}
-          className="w-full accent-accent"
+          className="energy w-full"
         />
         <div className="mb-6 flex justify-between text-xs text-muted">
           <span>Drained</span>

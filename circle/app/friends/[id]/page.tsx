@@ -22,6 +22,7 @@ import Avatar from "../../components/Avatar";
 import ScoreRing from "../../components/ScoreRing";
 import LogEntryModal from "../../components/LogEntryModal";
 import TrendChart from "../../components/TrendChart";
+import { SparkIcon, Twinkle } from "../../components/Icons";
 
 export default function FriendProfile() {
   const { id } = useParams<{ id: string }>();
@@ -153,20 +154,24 @@ export default function FriendProfile() {
   return (
     <>
       <Nav onLogClick={() => setShowLog(true)} />
-      <main className="mx-auto max-w-3xl space-y-6 px-5 py-8 pb-24">
+      <main className="mx-auto max-w-3xl space-y-6 px-5 pb-24 pt-10">
         {/* Header */}
-        <header className="grad-hero flex items-center gap-5 rounded-[2rem] p-7 shadow-soft">
-          <Avatar name={friend.name} size={72} />
+        <header className="grad-hero card-edge relative flex items-center gap-5 overflow-hidden rounded-[2rem] p-8 shadow-soft">
+          <Twinkle size={18} className="absolute right-24 top-6 text-accent/40" />
+          <Twinkle size={12} className="absolute bottom-8 right-44 text-clay/40" />
+          <Avatar name={friend.name} size={76} />
           <div className="flex-1">
-            <h1 className="font-serif text-3xl font-semibold">{friend.name}</h1>
+            <h1 className="font-serif text-4xl font-semibold tracking-tight">
+              {friend.name}
+            </h1>
             {friend.relationship_type && (
-              <p className="mt-1 inline-block rounded-full bg-card/70 px-3 py-1 text-xs font-medium capitalize text-muted">
+              <p className="mt-2 inline-block rounded-full bg-card/70 px-3 py-1 text-xs font-medium capitalize text-muted">
                 {friend.relationship_type}
               </p>
             )}
           </div>
           {score !== null ? (
-            <ScoreRing score={score} size={104} strokeWidth={9} />
+            <ScoreRing score={score} size={112} strokeWidth={10} glow />
           ) : (
             <p className="max-w-32 text-right text-xs leading-relaxed text-muted">
               {MIN_ENTRIES_FOR_SCORE - entries.length} more{" "}
@@ -179,8 +184,9 @@ export default function FriendProfile() {
         </header>
 
         {/* Trend */}
-        <section className="rounded-[2rem] bg-card p-7 shadow-softer">
-          <h2 className="mb-4 font-serif text-xl font-semibold">
+        <section className="card-edge rounded-[2rem] bg-card p-7 shadow-softer">
+          <p className="eyebrow mb-1">Trend</p>
+          <h2 className="mb-4 font-serif text-2xl font-semibold">
             The last twelve months
           </h2>
           <TrendChart points={monthlyTrend(entries)} />
@@ -188,10 +194,8 @@ export default function FriendProfile() {
 
         {/* Stats */}
         <div className="grid gap-3 sm:grid-cols-3">
-          <section className="rounded-3xl bg-card p-5 shadow-softer">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-              Effort balance
-            </h3>
+          <section className="card-edge rounded-3xl bg-card p-5 shadow-softer">
+            <p className="eyebrow mb-2.5">Effort balance</p>
             {ratio === null ? (
               <p className="text-sm text-muted">Log a moment to see this</p>
             ) : (
@@ -204,7 +208,7 @@ export default function FriendProfile() {
                 </div>
                 <p className="text-sm leading-snug">
                   You initiate{" "}
-                  <span className="font-serif text-lg font-semibold">
+                  <span className="font-serif text-xl font-semibold">
                     {Math.round(ratio * 100)}%
                   </span>{" "}
                   of the time
@@ -213,12 +217,10 @@ export default function FriendProfile() {
             )}
           </section>
 
-          <section className="rounded-3xl bg-card p-5 shadow-softer">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-              Frequency
-            </h3>
+          <section className="card-edge rounded-3xl bg-card p-5 shadow-softer">
+            <p className="eyebrow mb-2.5">Frequency</p>
             <p className="text-sm leading-snug">
-              <span className="font-serif text-lg font-semibold">{perMonth}</span>{" "}
+              <span className="font-serif text-xl font-semibold">{perMonth}</span>{" "}
               moments a month
             </p>
             {quiet !== null && (
@@ -228,10 +230,8 @@ export default function FriendProfile() {
             )}
           </section>
 
-          <section className="rounded-3xl bg-card p-5 shadow-softer">
-            <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted">
-              Most common
-            </h3>
+          <section className="card-edge rounded-3xl bg-card p-5 shadow-softer">
+            <p className="eyebrow mb-2.5">Most common</p>
             {tags.length === 0 ? (
               <p className="text-sm text-muted">No tags yet</p>
             ) : (
@@ -249,81 +249,94 @@ export default function FriendProfile() {
           </section>
         </div>
 
-        {/* AI summary */}
-        <section className="rounded-[2rem] bg-card p-7 shadow-softer">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="font-serif text-xl font-semibold">
-              In plain language
-            </h2>
+        {/* AI summary — dark contrast card */}
+        <section className="card-plum relative overflow-hidden rounded-[2rem] p-7 shadow-soft">
+          <SparkIcon size={18} className="absolute right-7 top-7 text-[#f2a0b4]" />
+          <div className="mb-4 flex items-center justify-between">
+            <div>
+              <p className="eyebrow mb-1 !text-[#f2a0b4]">Circle reflects</p>
+              <h2 className="font-serif text-2xl font-semibold text-white">
+                In plain language
+              </h2>
+            </div>
             <button
               onClick={reflect}
               disabled={summarising || entries.length === 0}
-              className="grad-accent rounded-full px-5 py-2 text-sm font-semibold text-white shadow-soft transition hover:brightness-105 disabled:opacity-50"
+              className="grad-accent rounded-full px-5 py-2.5 text-sm font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-50"
             >
               {summarising ? "Reflecting…" : summary ? "Refresh" : "Reflect"}
             </button>
           </div>
           {summary ? (
-            <p className="leading-relaxed">{summary}</p>
+            <p className="leading-relaxed text-[#f7dde5]">{summary}</p>
           ) : (
-            <p className="text-sm text-muted">
+            <p className="text-sm text-[#dfb2bf]">
               {entries.length === 0
-                ? "Log a few moments and Circle can put the pattern into words."
+                ? `Log a few moments and Circle can put the pattern with ${friend.name} into words.`
                 : "Tap reflect and Circle will put the recent pattern into words."}
             </p>
           )}
         </section>
 
-        {/* Entries */}
+        {/* Entries — timeline */}
         <section>
-          <h2 className="mb-3 font-serif text-xl font-semibold">Moments</h2>
+          <p className="eyebrow mb-1">History</p>
+          <h2 className="mb-5 font-serif text-2xl font-semibold">Moments</h2>
           {entries.length === 0 ? (
-            <p className="rounded-3xl bg-card p-6 text-sm text-muted shadow-softer">
+            <p className="card-edge rounded-3xl bg-card p-6 text-sm text-muted shadow-softer">
               Nothing here yet. After you next see {friend.name}, take fifteen
               seconds to log it.
             </p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="relative space-y-4 border-l-2 border-dashed border-line pl-6">
               {entries.map((e) => {
                 const a = analysisByEntry.get(e.id);
                 return (
-                  <li
-                    key={e.id}
-                    className="rounded-3xl bg-card p-5 text-sm shadow-softer"
-                  >
-                    <div className="mb-1.5 flex items-center justify-between">
-                      <span className="text-xs text-muted">
-                        {new Date(e.created_at).toLocaleDateString("en-GB", {
-                          day: "numeric",
-                          month: "short",
-                          year: "numeric",
-                        })}
-                      </span>
-                      <span className="rounded-full bg-cream px-2.5 py-0.5 text-xs text-muted">
-                        energy {e.energy_score}/10 · {e.effort}
-                      </span>
-                    </div>
-                    {e.tags?.length > 0 && (
-                      <div className="mb-1.5 flex flex-wrap gap-1.5">
-                        {e.tags.map((t) => (
-                          <span
-                            key={t}
-                            className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs text-accent-deep"
-                          >
-                            {t}
-                          </span>
-                        ))}
+                  <li key={e.id} className="relative">
+                    <span
+                      className={`absolute -left-[31px] top-5 h-3 w-3 rounded-full border-2 border-cream ${
+                        e.energy_score >= 6
+                          ? "bg-sage"
+                          : e.energy_score <= 4
+                            ? "bg-clay"
+                            : "bg-line"
+                      }`}
+                    />
+                    <div className="card-edge rounded-3xl bg-card p-5 text-sm shadow-softer">
+                      <div className="mb-1.5 flex items-center justify-between">
+                        <span className="text-xs font-medium text-muted">
+                          {new Date(e.created_at).toLocaleDateString("en-GB", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                          })}
+                        </span>
+                        <span className="rounded-full bg-cream px-2.5 py-0.5 text-xs text-muted">
+                          energy {e.energy_score}/10 · {e.effort}
+                        </span>
                       </div>
-                    )}
-                    {e.what_happened && <p>{e.what_happened}</p>}
-                    {e.how_i_felt && (
-                      <p className="mt-1 text-muted">Felt: {e.how_i_felt}</p>
-                    )}
-                    {a && (
-                      <p className="mt-2.5 border-t border-line pt-2.5 text-xs italic text-muted">
-                        {a.ai_note}
-                      </p>
-                    )}
+                      {e.tags?.length > 0 && (
+                        <div className="mb-1.5 flex flex-wrap gap-1.5">
+                          {e.tags.map((t) => (
+                            <span
+                              key={t}
+                              className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs text-accent-deep"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {e.what_happened && <p>{e.what_happened}</p>}
+                      {e.how_i_felt && (
+                        <p className="mt-1 text-muted">Felt: {e.how_i_felt}</p>
+                      )}
+                      {a && (
+                        <p className="mt-2.5 border-t border-line pt-2.5 text-xs italic text-muted">
+                          ✦ {a.ai_note}
+                        </p>
+                      )}
+                    </div>
                   </li>
                 );
               })}
@@ -332,8 +345,9 @@ export default function FriendProfile() {
         </section>
 
         {/* Manage — deletion easy and obvious */}
-        <section className="rounded-[2rem] border border-line/70 bg-card/60 p-7">
-          <h2 className="mb-3 font-serif text-xl font-semibold">Manage</h2>
+        <section className="rounded-[2rem] border border-line/70 bg-card/50 p-7">
+          <p className="eyebrow mb-1">Housekeeping</p>
+          <h2 className="mb-4 font-serif text-2xl font-semibold">Manage</h2>
           <div className="flex flex-wrap gap-3 text-sm">
             <button
               onClick={archiveFriend}

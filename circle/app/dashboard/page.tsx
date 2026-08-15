@@ -19,6 +19,13 @@ import Nav from "../components/Nav";
 import Avatar from "../components/Avatar";
 import ScoreRing from "../components/ScoreRing";
 import LogEntryModal from "../components/LogEntryModal";
+import {
+  ArrowIcon,
+  HeartIcon,
+  MoonIcon,
+  SparkIcon,
+  Twinkle,
+} from "../components/Icons";
 
 interface FriendStats {
   friend: Friend;
@@ -93,6 +100,7 @@ export default function Dashboard() {
   const scored = stats
     .filter((s) => s.score !== null)
     .sort((a, b) => b.score! - a.score!);
+  const top = scored[0];
   const toProtect = scored.filter((s) => s.score! >= 65).slice(0, 3);
   const costing = [...scored]
     .reverse()
@@ -120,11 +128,12 @@ export default function Dashboard() {
   return (
     <>
       <Nav onLogClick={() => setShowLog(true)} />
-      <main className="mx-auto max-w-3xl space-y-10 px-5 py-8 pb-24">
+      <main className="mx-auto max-w-3xl space-y-12 px-5 pb-24 pt-10">
         {/* Empty state */}
         {friends.length === 0 && (
-          <div className="grad-hero rounded-[2rem] p-10 text-center shadow-soft">
-            <h2 className="mb-2 font-serif text-2xl font-semibold">
+          <div className="grad-hero card-edge relative overflow-hidden rounded-[2rem] p-10 text-center shadow-soft">
+            <Twinkle size={20} className="absolute right-8 top-8 text-accent/50" />
+            <h2 className="mb-2 font-serif text-3xl font-semibold">
               Your circle is empty
             </h2>
             <p className="mx-auto mb-7 max-w-sm text-muted">
@@ -133,80 +142,116 @@ export default function Dashboard() {
             </p>
             <Link
               href="/onboarding"
-              className="grad-accent rounded-full px-7 py-3 font-semibold text-white shadow-soft"
+              className="grad-accent inline-flex items-center gap-2 rounded-full px-7 py-3 font-semibold text-white shadow-soft"
             >
-              Add friends
+              Add friends <ArrowIcon size={16} />
             </Link>
           </div>
         )}
 
-        {/* This month hero */}
+        {/* Bento hero: month + top of circle */}
         {recent.length > 0 && (
-          <section className="grad-hero rounded-[2rem] p-7 shadow-soft">
-            <div className="mb-5 flex items-end justify-between">
-              <div>
-                <h1 className="font-serif text-2xl font-semibold">
-                  Your month so far
-                </h1>
-                <p className="mt-1 text-sm text-muted">
-                  {recent.length} {recent.length === 1 ? "moment" : "moments"}{" "}
-                  across {new Set(recent.map((e) => e.friend_id)).size} people
-                </p>
-              </div>
-              <p className="hidden text-right text-sm text-muted sm:block">
+          <section className="grid gap-4 sm:grid-cols-5">
+            <div className="grad-hero card-edge relative overflow-hidden rounded-[2rem] p-7 shadow-soft sm:col-span-3">
+              <Twinkle
+                size={16}
+                className="absolute right-7 top-7 text-accent/50"
+              />
+              <p className="eyebrow mb-1.5">This month</p>
+              <h1 className="mb-1 font-serif text-3xl font-semibold">
+                {recent.length} {recent.length === 1 ? "moment" : "moments"}
+              </h1>
+              <p className="mb-6 text-sm text-muted">
+                across {new Set(recent.map((e) => e.friend_id)).size} people ·{" "}
                 {new Date().toLocaleDateString("en-GB", {
                   day: "numeric",
                   month: "long",
                 })}
               </p>
+
+              <div className="flex h-4 gap-1 overflow-hidden rounded-full">
+                {energised > 0 && (
+                  <div
+                    className="rounded-full bg-sage"
+                    style={{ flex: energised }}
+                  />
+                )}
+                {neutral > 0 && (
+                  <div
+                    className="rounded-full bg-card/90"
+                    style={{ flex: neutral }}
+                  />
+                )}
+                {drained > 0 && (
+                  <div
+                    className="rounded-full bg-clay"
+                    style={{ flex: drained }}
+                  />
+                )}
+              </div>
+              <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+                <span className="flex items-center gap-1.5 font-medium">
+                  <span className="h-2 w-2 rounded-full bg-sage" />
+                  {energised} energised you
+                </span>
+                <span className="flex items-center gap-1.5 text-muted">
+                  <span className="h-2 w-2 rounded-full bg-card" />
+                  {neutral} neutral
+                </span>
+                <span className="flex items-center gap-1.5 font-medium">
+                  <span className="h-2 w-2 rounded-full bg-clay" />
+                  {drained} drained you
+                </span>
+              </div>
             </div>
 
-            {/* energised vs drained split */}
-            <div className="flex h-3.5 gap-0.5 overflow-hidden rounded-full">
-              {energised > 0 && (
-                <div
-                  className="rounded-full bg-sage"
-                  style={{ flex: energised }}
+            {top && (
+              <Link
+                href={`/friends/${top.friend.id}`}
+                className="card-plum group relative overflow-hidden rounded-[2rem] p-6 shadow-soft transition hover:-translate-y-0.5 sm:col-span-2"
+              >
+                <SparkIcon
+                  size={18}
+                  className="absolute right-6 top-6 text-[#f2a0b4]"
                 />
-              )}
-              {neutral > 0 && (
-                <div
-                  className="rounded-full bg-card/80"
-                  style={{ flex: neutral }}
-                />
-              )}
-              {drained > 0 && (
-                <div
-                  className="rounded-full bg-clay"
-                  style={{ flex: drained }}
-                />
-              )}
-            </div>
-            <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-sage" />
-                {energised} left you energised
-              </span>
-              <span className="flex items-center gap-1.5 text-muted">
-                <span className="h-2 w-2 rounded-full bg-card" />
-                {neutral} neutral
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-clay" />
-                {drained} left you drained
-              </span>
-            </div>
+                <p className="eyebrow mb-4 !text-[#f2a0b4]">Top of your circle</p>
+                <div className="mb-4 flex items-center gap-3">
+                  <Avatar name={top.friend.name} size={46} />
+                  <div>
+                    <p className="font-serif text-xl font-semibold text-white">
+                      {top.friend.name}
+                    </p>
+                    <p className="text-xs text-[#dfb2bf]">
+                      feeds you the most right now
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-end justify-between">
+                  <span className="font-serif text-5xl font-semibold text-white">
+                    {top.score}
+                  </span>
+                  <span className="mb-1 flex items-center gap-1 text-xs font-medium text-[#dfb2bf] transition group-hover:text-white">
+                    See why <ArrowIcon size={14} />
+                  </span>
+                </div>
+              </Link>
+            )}
           </section>
         )}
 
         {/* Your circle, ranked */}
         {friends.length > 0 && (
           <section>
-            <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-serif text-2xl font-semibold">Your circle</h2>
+            <div className="mb-5 flex items-end justify-between">
+              <div>
+                <p className="eyebrow mb-1">Ranked by energy</p>
+                <h2 className="font-serif text-3xl font-semibold">
+                  Your circle
+                </h2>
+              </div>
               <button
                 onClick={() => setShowAddFriend((v) => !v)}
-                className="rounded-full border border-line bg-card px-4 py-2 text-sm font-semibold text-accent shadow-softer transition hover:border-accent"
+                className="glass rounded-full px-4 py-2 text-sm font-semibold text-accent shadow-softer transition hover:-translate-y-px"
               >
                 + Add friend
               </button>
@@ -215,7 +260,7 @@ export default function Dashboard() {
             {showAddFriend && (
               <form
                 onSubmit={addFriend}
-                className="mb-4 space-y-3 rounded-3xl bg-card p-5 shadow-softer"
+                className="card-edge mb-4 space-y-3 rounded-3xl bg-card p-5 shadow-softer"
               >
                 <input
                   value={newName}
@@ -255,12 +300,19 @@ export default function Dashboard() {
                   <li key={friend.id}>
                     <Link
                       href={`/friends/${friend.id}`}
-                      className="flex items-center gap-4 rounded-3xl bg-card p-4 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
+                      className="card-edge group flex items-center gap-4 rounded-3xl bg-card p-4 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                     >
                       <Avatar name={friend.name} size={48} />
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-semibold">{friend.name}</p>
-                        <p className="text-xs text-muted">
+                        <div className="flex items-center gap-2">
+                          <p className="truncate font-semibold">{friend.name}</p>
+                          {friend.relationship_type && (
+                            <span className="hidden rounded-full bg-cream px-2.5 py-0.5 text-[11px] font-medium capitalize text-muted sm:inline">
+                              {friend.relationship_type}
+                            </span>
+                          )}
+                        </div>
+                        <p className="mt-0.5 text-xs text-muted">
                           {fe.length === 0
                             ? "No moments logged yet"
                             : score === null
@@ -268,6 +320,10 @@ export default function Dashboard() {
                               : `${fe.length} moments logged`}
                         </p>
                       </div>
+                      <ArrowIcon
+                        size={16}
+                        className="text-line transition group-hover:text-accent"
+                      />
                       {score !== null && (
                         <ScoreRing
                           score={score}
@@ -286,10 +342,17 @@ export default function Dashboard() {
         {/* Ones to protect */}
         {toProtect.length > 0 && (
           <section>
-            <h2 className="mb-1 font-serif text-2xl font-semibold">
-              Ones to protect
-            </h2>
-            <p className="mb-4 text-sm text-muted">
+            <div className="mb-5 flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-sage-soft text-sage">
+                <HeartIcon size={17} />
+              </span>
+              <div>
+                <h2 className="font-serif text-3xl font-semibold leading-tight">
+                  Ones to protect
+                </h2>
+              </div>
+            </div>
+            <p className="-mt-3 mb-4 text-sm text-muted">
               These friendships consistently leave you better than they found
               you.
             </p>
@@ -298,11 +361,11 @@ export default function Dashboard() {
                 <Link
                   key={friend.id}
                   href={`/friends/${friend.id}`}
-                  className="rounded-3xl bg-sage-soft p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
+                  className="card-edge rounded-3xl bg-sage-soft p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <Avatar name={friend.name} size={40} />
-                    <span className="font-serif text-2xl font-semibold text-sage">
+                    <span className="font-serif text-3xl font-semibold text-sage">
                       {score}
                     </span>
                   </div>
@@ -317,10 +380,15 @@ export default function Dashboard() {
         {/* Costing you */}
         {costing.length > 0 && (
           <section>
-            <h2 className="mb-1 font-serif text-2xl font-semibold">
-              Taking more than they give
-            </h2>
-            <p className="mb-4 text-sm text-muted">
+            <div className="mb-5 flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-clay-soft text-clay">
+                <MoonIcon size={17} />
+              </span>
+              <h2 className="font-serif text-3xl font-semibold leading-tight">
+                Taking more than they give
+              </h2>
+            </div>
+            <p className="-mt-3 mb-4 text-sm text-muted">
               Right now, these ones tend to leave you drained. Just an
               observation — you know the full story.
             </p>
@@ -329,11 +397,11 @@ export default function Dashboard() {
                 <Link
                   key={friend.id}
                   href={`/friends/${friend.id}`}
-                  className="rounded-3xl bg-clay-soft p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
+                  className="card-edge rounded-3xl bg-clay-soft p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <Avatar name={friend.name} size={40} />
-                    <span className="font-serif text-2xl font-semibold text-clay">
+                    <span className="font-serif text-3xl font-semibold text-clay">
                       {score}
                     </span>
                   </div>
@@ -348,10 +416,15 @@ export default function Dashboard() {
         {/* Going quiet */}
         {goingQuiet.length > 0 && (
           <section>
-            <h2 className="mb-1 font-serif text-2xl font-semibold">
-              Going quiet
-            </h2>
-            <p className="mb-4 text-sm text-muted">
+            <div className="mb-5 flex items-center gap-2.5">
+              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-accent">
+                <MoonIcon size={17} />
+              </span>
+              <h2 className="font-serif text-3xl font-semibold leading-tight">
+                Going quiet
+              </h2>
+            </div>
+            <p className="-mt-3 mb-4 text-sm text-muted">
               Nothing logged in over sixty days. Maybe worth a message?
             </p>
             <ul className="space-y-3">
@@ -359,7 +432,7 @@ export default function Dashboard() {
                 <li key={friend.id}>
                   <Link
                     href={`/friends/${friend.id}`}
-                    className="flex items-center gap-4 rounded-3xl bg-card p-4 text-sm shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
+                    className="card-edge flex items-center gap-4 rounded-3xl bg-card p-4 text-sm shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                   >
                     <Avatar name={friend.name} size={40} />
                     <span className="flex-1 font-semibold">{friend.name}</span>

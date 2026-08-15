@@ -4,11 +4,15 @@ export default function ScoreRing({
   size = 96,
   strokeWidth = 8,
   showLabel = true,
+  track = "#f6ddda",
+  glow = false,
 }: {
   score: number;
   size?: number;
   strokeWidth?: number;
   showLabel?: boolean;
+  track?: string;
+  glow?: boolean;
 }) {
   const r = (size - strokeWidth) / 2;
   const c = 2 * Math.PI * r;
@@ -17,7 +21,16 @@ export default function ScoreRing({
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
+      <svg
+        width={size}
+        height={size}
+        className="-rotate-90"
+        style={
+          glow
+            ? { filter: "drop-shadow(0 6px 18px rgba(214, 83, 109, 0.4))" }
+            : undefined
+        }
+      >
         <defs>
           <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#ea7189" />
@@ -29,7 +42,7 @@ export default function ScoreRing({
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#f6ddda"
+          stroke={track}
           strokeWidth={strokeWidth}
         />
         <circle
@@ -51,7 +64,7 @@ export default function ScoreRing({
           {score}
         </span>
         {showLabel && size >= 80 && (
-          <span className="mt-0.5 text-[10px] uppercase tracking-wide text-muted">
+          <span className="mt-0.5 text-[10px] uppercase tracking-wide opacity-60">
             of 100
           </span>
         )}
