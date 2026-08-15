@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Fraunces, Nunito_Sans } from "next/font/google";
+import { Instrument_Serif, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const fraunces = Fraunces({
+const instrument = Instrument_Serif({
+  weight: "400",
+  style: ["normal", "italic"],
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-display",
 });
 
-const nunito = Nunito_Sans({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  variable: "--font-nunito",
+  variable: "--font-jakarta",
 });
 
 export const metadata: Metadata = {
@@ -24,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${nunito.variable}`}>
+    <html lang="en" className={`${instrument.variable} ${jakarta.variable}`}>
       <body className="min-h-screen antialiased">{children}</body>
     </html>
   );

@@ -33,8 +33,9 @@ export default function ScoreRing({
       >
         <defs>
           <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#ea7189" />
-            <stop offset="100%" stopColor="#cf4d74" />
+            <stop offset="0%" stopColor="#f0a06e" />
+            <stop offset="50%" stopColor="#e05780" />
+            <stop offset="100%" stopColor="#a85ab8" />
           </linearGradient>
         </defs>
         <circle

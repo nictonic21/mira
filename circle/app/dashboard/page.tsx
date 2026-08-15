@@ -18,6 +18,7 @@ import {
 import Nav from "../components/Nav";
 import Avatar from "../components/Avatar";
 import ScoreRing from "../components/ScoreRing";
+import CircleMotif from "../components/CircleMotif";
 import LogEntryModal from "../components/LogEntryModal";
 import {
   ArrowIcon,
@@ -133,6 +134,7 @@ export default function Dashboard() {
         {friends.length === 0 && (
           <div className="grad-hero card-edge relative overflow-hidden rounded-[2rem] p-10 text-center shadow-soft">
             <Twinkle size={20} className="absolute right-8 top-8 text-accent/50" />
+            <CircleMotif size={110} className="mx-auto mb-4" />
             <h2 className="mb-2 font-serif text-3xl font-semibold">
               Your circle is empty
             </h2>
@@ -158,8 +160,11 @@ export default function Dashboard() {
                 className="absolute right-7 top-7 text-accent/50"
               />
               <p className="eyebrow mb-1.5">This month</p>
-              <h1 className="mb-1 font-serif text-3xl font-semibold">
-                {recent.length} {recent.length === 1 ? "moment" : "moments"}
+              <h1 className="mb-1 font-serif text-4xl">
+                <span className="text-grad pr-0.5 font-semibold">
+                  {recent.length}
+                </span>{" "}
+                {recent.length === 1 ? "moment" : "moments"}
               </h1>
               <p className="mb-6 text-sm text-muted">
                 across {new Set(recent.map((e) => e.friend_id)).size} people ·{" "}
@@ -343,7 +348,7 @@ export default function Dashboard() {
         {toProtect.length > 0 && (
           <section>
             <div className="mb-5 flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-sage-soft text-sage">
+              <span className="chip-mint flex h-9 w-9 items-center justify-center rounded-full shadow-softer">
                 <HeartIcon size={17} />
               </span>
               <div>
@@ -361,7 +366,7 @@ export default function Dashboard() {
                 <Link
                   key={friend.id}
                   href={`/friends/${friend.id}`}
-                  className="card-edge rounded-3xl bg-sage-soft p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
+                  className="grad-mint card-edge rounded-3xl p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <Avatar name={friend.name} size={40} />
@@ -381,7 +386,7 @@ export default function Dashboard() {
         {costing.length > 0 && (
           <section>
             <div className="mb-5 flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-clay-soft text-clay">
+              <span className="chip-apricot flex h-9 w-9 items-center justify-center rounded-full shadow-softer">
                 <MoonIcon size={17} />
               </span>
               <h2 className="font-serif text-3xl font-semibold leading-tight">
@@ -397,7 +402,7 @@ export default function Dashboard() {
                 <Link
                   key={friend.id}
                   href={`/friends/${friend.id}`}
-                  className="card-edge rounded-3xl bg-clay-soft p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
+                  className="grad-apricot card-edge rounded-3xl p-5 shadow-softer transition hover:-translate-y-0.5 hover:shadow-soft"
                 >
                   <div className="mb-3 flex items-center justify-between">
                     <Avatar name={friend.name} size={40} />
@@ -417,7 +422,7 @@ export default function Dashboard() {
         {goingQuiet.length > 0 && (
           <section>
             <div className="mb-5 flex items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-accent">
+              <span className="chip-lilac flex h-9 w-9 items-center justify-center rounded-full shadow-softer">
                 <MoonIcon size={17} />
               </span>
               <h2 className="font-serif text-3xl font-semibold leading-tight">

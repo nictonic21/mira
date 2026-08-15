@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabase";
 import Avatar from "./components/Avatar";
 import ScoreRing from "./components/ScoreRing";
+import CircleMotif from "./components/CircleMotif";
 import { ArrowIcon, HeartIcon, Twinkle } from "./components/Icons";
 
 export default function Home() {
@@ -69,24 +70,37 @@ export default function Home() {
           Energy after — <span className="text-sage">Fully energised</span>
         </p>
       </div>
+      <div
+        className="floaty glass absolute bottom-[24%] right-[9%] hidden rotate-[-5deg] items-center gap-2.5 rounded-3xl px-4 py-3 shadow-soft lg:flex"
+        style={{ "--tilt": "-5deg", animationDelay: "3.4s" } as React.CSSProperties}
+      >
+        <span className="chip-lilac flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold">
+          62
+        </span>
+        <p className="text-left text-sm font-medium">
+          Alex is going quiet —<br />
+          <span className="text-xs text-muted">62 days since you logged</span>
+        </p>
+      </div>
 
       {/* Sparkles */}
-      <Twinkle size={22} className="absolute left-[30%] top-[18%] text-accent/60" />
-      <Twinkle size={14} className="absolute right-[28%] top-[14%] text-clay/50" />
-      <Twinkle size={16} className="absolute bottom-[24%] right-[16%] text-accent/40" />
+      <Twinkle size={22} className="absolute left-[30%] top-[16%] text-accent/60" />
+      <Twinkle size={14} className="absolute right-[28%] top-[13%] text-violet/50" />
+      <Twinkle size={16} className="absolute bottom-[22%] right-[30%] text-clay/50" />
+      <Twinkle size={12} className="absolute bottom-[35%] left-[26%] text-accent/40" />
 
-      <span className="grad-accent mb-8 flex h-20 w-20 items-center justify-center rounded-full font-serif text-3xl text-white shadow-soft">
-        C
-      </span>
+      <CircleMotif size={150} className="mb-4 drop-shadow-lg" />
       <p className="eyebrow mb-4">A private friendship journal</p>
-      <h1 className="mb-5 font-serif text-6xl font-semibold leading-[1.05] tracking-tight sm:text-7xl">
+      <h1 className="mb-5 font-serif text-6xl leading-[1.02] tracking-tight sm:text-[5.2rem]">
         Keep the ones
         <br />
-        who <em className="text-accent">keep you</em>
+        who <em className="text-grad pr-1">keep you</em>
       </h1>
-      <p className="mb-10 max-w-md text-lg leading-relaxed text-muted">
+      <p className="mb-10 max-w-lg text-lg leading-relaxed text-muted">
         Fifteen seconds after you see someone. Over time, Circle shows you
-        which friendships feed you — and which ones quietly drain you.
+        which friendships <span className="highlight-mint text-ink">feed you</span>{" "}
+        — and which ones quietly{" "}
+        <span className="highlight text-ink">drain you</span>.
       </p>
       <div className="flex items-center gap-3">
         <Link

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
-/* Warm, feminine palette: peachy-blush background, rose-coral accent,
-   plum ink, mint for relationships that feed you, apricot for ones
-   costing energy. (Token names kept from the first pass.) */
+/* Warm, feminine palette: peachy-blush background with a rose→violet accent
+   range, plum ink, mint for relationships that feed you, apricot for ones
+   costing energy, lilac for quiet ones. (Token names kept from the first pass.) */
 @theme {
   --color-cream: #fdf1ed;
   --color-card: #ffffff;
@@ -10,24 +10,27 @@
   --color-plum: #46222f;
   --color-muted: #a97f8b;
   --color-line: #f6ddda;
-  --color-accent: #d6536d;
+  --color-accent: #de5480;
   --color-accent-deep: #b93d5e;
   --color-accent-soft: #fce6e6;
-  --color-sage: #5b9279;
+  --color-violet: #9d5bb5;
+  --color-violet-soft: #f3e9f8;
+  --color-sage: #4f8d72;
   --color-sage-soft: #e5f2ea;
   --color-clay: #c4764a;
   --color-clay-soft: #faeadd;
 
-  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-fraunces), Georgia, serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-display), Georgia, serif;
 }
 
 body {
   background-color: var(--color-cream);
   background-image:
-    radial-gradient(60rem 40rem at 110% -10%, #fbdce6 0%, transparent 60%),
-    radial-gradient(50rem 35rem at -20% 110%, #fde4d3 0%, transparent 55%),
-    radial-gradient(40rem 30rem at 50% 50%, #fdeae2 0%, transparent 70%);
+    radial-gradient(55rem 38rem at 112% -8%, #f9cede 0%, transparent 60%),
+    radial-gradient(48rem 34rem at -18% 108%, #fcdcc3 0%, transparent 55%),
+    radial-gradient(42rem 30rem at 88% 82%, #efdcf5 0%, transparent 55%),
+    radial-gradient(38rem 28rem at 45% 45%, #fde4d8 0%, transparent 70%);
   background-attachment: fixed;
   color: var(--color-ink);
   font-family: var(--font-sans);
@@ -44,18 +47,73 @@ body::after {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* Shared decorative helpers */
+/* ---------- gradients ---------- */
 .grad-accent {
-  background-image: linear-gradient(135deg, #ea7189, #cf4d74);
+  background-image: linear-gradient(135deg, #f08d9b 0%, #de5480 52%, #b44f96 100%);
 }
 
 .grad-hero {
-  background-image: linear-gradient(135deg, #fde5da 0%, #fbdae4 55%, #f8d2e0 100%);
+  background-image: linear-gradient(135deg, #fde3cf 0%, #fbd6e2 48%, #f2d2f0 100%);
+}
+
+.grad-mint {
+  background-image: linear-gradient(140deg, #ecf7ee 0%, #d7eedd 55%, #c5e6da 100%);
+}
+
+.grad-apricot {
+  background-image: linear-gradient(140deg, #fdeedd 0%, #fbdfc4 55%, #f9d3bd 100%);
+}
+
+.grad-lilac {
+  background-image: linear-gradient(140deg, #f6ecfa 0%, #ecdcf5 55%, #e3cff2 100%);
 }
 
 .card-plum {
-  background-image: linear-gradient(155deg, #572e3f 0%, #46222f 60%, #3a1b27 100%);
+  background-image:
+    radial-gradient(20rem 13rem at 88% -8%, rgba(240, 141, 155, 0.45), transparent 60%),
+    radial-gradient(16rem 11rem at -5% 110%, rgba(157, 91, 181, 0.35), transparent 55%),
+    linear-gradient(155deg, #572e3f 0%, #46222f 60%, #3a1b27 100%);
   color: #fbeef2;
+}
+
+.chip-mint {
+  background-image: linear-gradient(135deg, #9ed0b5, #4f8d72);
+  color: #ffffff;
+}
+
+.chip-apricot {
+  background-image: linear-gradient(135deg, #eec29a, #c4764a);
+  color: #ffffff;
+}
+
+.chip-lilac {
+  background-image: linear-gradient(135deg, #c9a6dd, #9d5bb5);
+  color: #ffffff;
+}
+
+/* Gradient-clipped text for hero numbers and italic accents. */
+.text-grad {
+  background-image: linear-gradient(120deg, #e05780 20%, #a85ab8 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Marker-pen highlight behind key words. */
+.highlight {
+  background-image: linear-gradient(120deg, rgba(255, 199, 146, 0.8), rgba(255, 168, 198, 0.8));
+  background-repeat: no-repeat;
+  background-size: 100% 40%;
+  background-position: 0 82%;
+  padding: 0 0.12em;
+}
+
+.highlight-mint {
+  background-image: linear-gradient(120deg, rgba(158, 208, 181, 0.7), rgba(197, 230, 218, 0.9));
+  background-repeat: no-repeat;
+  background-size: 100% 40%;
+  background-position: 0 82%;
+  padding: 0 0.12em;
 }
 
 .glass {
@@ -65,7 +123,7 @@ body::after {
 }
 
 .shadow-soft {
-  box-shadow: 0 14px 34px -16px rgba(190, 80, 110, 0.28);
+  box-shadow: 0 14px 34px -16px rgba(190, 80, 110, 0.3);
 }
 
 .shadow-softer {
@@ -83,7 +141,7 @@ body::after {
 /* Layered card border — a hairline of white over the shadow reads premium. */
 .card-edge {
   border: 1px solid rgba(255, 255, 255, 0.9);
-  outline: 1px solid rgba(214, 83, 109, 0.07);
+  outline: 1px solid rgba(222, 84, 128, 0.07);
 }
 
 /* Gradient energy slider: drained (apricot) → energised (mint). */
@@ -93,7 +151,7 @@ input[type="range"].energy {
   width: 100%;
   height: 12px;
   border-radius: 999px;
-  background: linear-gradient(90deg, #c4764a, #efc08a 35%, #cfe3d2 65%, #5b9279);
+  background: linear-gradient(90deg, #c4764a, #efc08a 35%, #cfe3d2 65%, #4f8d72);
   outline: none;
 }
 input[type="range"].energy::-webkit-slider-thumb {
@@ -124,4 +182,14 @@ input[type="range"].energy::-moz-range-thumb {
 }
 .floaty {
   animation: floaty 6s ease-in-out infinite;
+}
+
+/* Slow orbit for the brand motif's dots. */
+@keyframes orbit {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.orbit {
+  animation: orbit 30s linear infinite;
+  transform-origin: center;
 }

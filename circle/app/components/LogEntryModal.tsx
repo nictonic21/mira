@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { Effort, Friend, TAGS } from "../../lib/types";
+import { tagPalette } from "./TagChip";
 
 const ENERGY_WORDS = [
   "Completely drained",
@@ -188,19 +189,30 @@ export default function LogEntryModal({
           How was it? (optional)
         </label>
         <div className="mb-6 flex flex-wrap gap-2">
-          {TAGS.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => toggleTag(tag)}
-              className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
-                tags.includes(tag)
-                  ? "border-accent bg-accent-soft text-accent-deep"
-                  : "border-line bg-cream text-muted hover:text-ink"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
+          {TAGS.map((tag) => {
+            const p = tagPalette(tag);
+            const active = tags.includes(tag);
+            return (
+              <button
+                key={tag}
+                onClick={() => toggleTag(tag)}
+                className={`rounded-full border px-3.5 py-1.5 text-xs font-medium transition ${
+                  active ? "" : "border-line bg-cream hover:text-ink"
+                }`}
+                style={
+                  active
+                    ? {
+                        backgroundColor: p.bg,
+                        color: p.text,
+                        borderColor: p.border,
+                      }
+                    : undefined
+                }
+              >
+                <span className={active ? "" : "text-muted"}>{tag}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Deep log */}

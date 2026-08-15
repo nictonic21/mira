@@ -71,12 +71,13 @@ export default function TrendChart({ points }: { points: MonthPoint[] }) {
       >
         <defs>
           <linearGradient id="trend-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#d6536d" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#d6536d" stopOpacity="0" />
+            <stop offset="0%" stopColor="#e05780" stopOpacity="0.25" />
+            <stop offset="100%" stopColor="#a85ab8" stopOpacity="0" />
           </linearGradient>
           <linearGradient id="trend-line" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#ea7189" />
-            <stop offset="100%" stopColor="#cf4d74" />
+            <stop offset="0%" stopColor="#f0a06e" />
+            <stop offset="50%" stopColor="#e05780" />
+            <stop offset="100%" stopColor="#a85ab8" />
           </linearGradient>
         </defs>
 

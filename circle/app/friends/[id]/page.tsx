@@ -22,6 +22,7 @@ import Avatar from "../../components/Avatar";
 import ScoreRing from "../../components/ScoreRing";
 import LogEntryModal from "../../components/LogEntryModal";
 import TrendChart from "../../components/TrendChart";
+import TagChip from "../../components/TagChip";
 import { SparkIcon, Twinkle } from "../../components/Icons";
 
 export default function FriendProfile() {
@@ -237,12 +238,7 @@ export default function FriendProfile() {
             ) : (
               <div className="flex flex-wrap gap-1.5">
                 {tags.map(({ tag }) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-accent-soft px-3 py-1 text-xs font-medium text-accent-deep"
-                  >
-                    {tag}
-                  </span>
+                  <TagChip key={tag} tag={tag} />
                 ))}
               </div>
             )}
@@ -318,12 +314,7 @@ export default function FriendProfile() {
                       {e.tags?.length > 0 && (
                         <div className="mb-1.5 flex flex-wrap gap-1.5">
                           {e.tags.map((t) => (
-                            <span
-                              key={t}
-                              className="rounded-full bg-accent-soft px-2.5 py-0.5 text-xs text-accent-deep"
-                            >
-                              {t}
-                            </span>
+                            <TagChip key={t} tag={t} size="xs" />
                           ))}
                         </div>
                       )}
