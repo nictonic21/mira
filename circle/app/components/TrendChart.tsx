@@ -57,7 +57,7 @@ export default function TrendChart({ points }: { points: MonthPoint[] }) {
               x2={width - pad.right}
               y1={y(v)}
               y2={y(v)}
-              stroke="#ece5db"
+              stroke="#f4dce7"
               strokeWidth="1"
             />
             <text
@@ -65,7 +65,7 @@ export default function TrendChart({ points }: { points: MonthPoint[] }) {
               y={y(v) + 4}
               textAnchor="end"
               fontSize="11"
-              fill="#8a7f75"
+              fill="#a0798e"
             >
               {v}
             </text>
@@ -80,7 +80,7 @@ export default function TrendChart({ points }: { points: MonthPoint[] }) {
             y={height - 8}
             textAnchor="middle"
             fontSize="11"
-            fill="#8a7f75"
+            fill="#a0798e"
           >
             {p.label}
           </text>
@@ -93,7 +93,7 @@ export default function TrendChart({ points }: { points: MonthPoint[] }) {
               key={i}
               points={s}
               fill="none"
-              stroke="#c2593f"
+              stroke="#c94f7c"
               strokeWidth="2"
               strokeLinejoin="round"
               strokeLinecap="round"
@@ -109,7 +109,7 @@ export default function TrendChart({ points }: { points: MonthPoint[] }) {
                 cx={x(i)}
                 cy={y(p.score)}
                 r={hover === i ? 5 : 3.5}
-                fill="#c2593f"
+                fill="#c94f7c"
                 stroke="#ffffff"
                 strokeWidth="2"
               />
